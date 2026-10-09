@@ -34,37 +34,11 @@
     <div class="stage" id="stage">
       <div class="slides" id="slides">
 
-    <!-- 1. Portada: cada animal es una figura aparte (cuerpo, cabeza, alas) y llega con su propio movimiento -->
+    <!-- 1. Portada: los animales se dibujan aparte (js/animales.js) y llegan con movimiento propio -->
     <section class="hoja slide" data-anim="selva" aria-label="Invitación">
       <img class="base" src="img/03_portada.webp" width="1440" height="2560"
            alt="Pepe Portilla. Usted está cordialmente invitado a celebrar 60 años.">
-      <div class="animal guac1 ave" style="left:0.0%;top:8.864%;width:17.75%;height:21.189%">
-        <img class="parte cuerpo" src="img/anim/guac1_cuerpo.webp" alt="" decoding="async">
-        <img class="parte ala" src="img/anim/guac1_ala.webp" alt="" decoding="async" style="transform-origin:62% 20%">
-        <img class="parte cabeza" src="img/anim/guac1_cabeza.webp" alt="" decoding="async" style="transform-origin:72% 15%">
-      </div>
-      <div class="animal guac2 ave" style="left:0.0%;top:19.981%;width:22.163%;height:19.352%">
-        <img class="parte cuerpo" src="img/anim/guac2_cuerpo.webp" alt="" decoding="async">
-        <img class="parte ala" src="img/anim/guac2_ala.webp" alt="" decoding="async" style="transform-origin:64% 23%">
-        <img class="parte cabeza" src="img/anim/guac2_cabeza.webp" alt="" decoding="async" style="transform-origin:76% 16%">
-      </div>
-      <div class="animal tucan ave" style="left:80.948%;top:22.019%;width:19.051%;height:10.601%">
-        <img class="parte cuerpo" src="img/anim/tucan_cuerpo.webp" alt="" decoding="async">
-        <img class="parte ala" src="img/anim/tucan_ala.webp" alt="" decoding="async" style="transform-origin:75% 33%">
-        <img class="parte cabeza" src="img/anim/tucan_cabeza.webp" alt="" decoding="async" style="transform-origin:68% 38%">
-      </div>
-      <div class="ventana" style="left:3.57%;top:64.571%;width:26.626%;height:22.219%">
-        <div class="animal oso" style="left:0;top:37.5%;width:100%;height:62.5%">
-          <img class="parte cuerpo" src="img/anim/oso_cuerpo.webp" alt="" decoding="async">
-          <img class="parte cabeza" src="img/anim/oso_cabeza.webp" alt="" decoding="async" style="transform-origin:68% 52%">
-        </div>
-      </div>
-      <div class="animal jaguar" style="left:73.144%;top:70.751%;width:26.855%;height:15.895%">
-        <img class="parte cuerpo" src="img/anim/jaguar_cuerpo.webp" alt="" decoding="async">
-        <img class="parte patab" src="img/anim/jaguar_patab.webp" alt="" decoding="async" style="transform-origin:50% 82%">
-        <img class="parte pataa" src="img/anim/jaguar_pataa.webp" alt="" decoding="async" style="transform-origin:60% 66%">
-        <img class="parte cabeza" src="img/anim/jaguar_cabeza.webp" alt="" decoding="async" style="transform-origin:38% 40%">
-      </div>
+      <canvas class="selva" data-escena="selva" aria-hidden="true"></canvas>
       <img class="frente" src="img/anim/p03_frente.webp" alt="" decoding="async" style="left:4.722%;top:82.305%;width:72.986%;height:5.859%">
     </section>
 
@@ -119,15 +93,7 @@
     <section class="hoja slide" data-anim="aves" aria-label="Confirmación de asistencia">
       <img class="base" src="img/07_confirmacion.webp" width="1440" height="2560" decoding="async"
            alt="Agradecemos su confirmación hasta el 27 de diciembre del 2026.">
-      <div class="animal colibri ave" style="left:4.444%;top:8.242%;width:27.917%;height:13.594%">
-        <img class="parte cuerpo" src="img/anim/colibri_cuerpo.webp" alt="" decoding="async">
-        <img class="parte ala" src="img/anim/colibri_ala.webp" alt="" decoding="async" style="transform-origin:29.65% 36%">
-        <img class="parte cabeza" src="img/anim/colibri_cabeza.webp" alt="" decoding="async" style="transform-origin:34.1% 30%">
-      </div>
-      <div class="animal tucan7 ave" style="left:73.75%;top:56.289%;width:25.556%;height:13.359%">
-        <img class="parte cuerpo" src="img/anim/tucan7_cuerpo.webp" alt="" decoding="async">
-        <img class="parte cabeza" src="img/anim/tucan7_cabeza.webp" alt="" decoding="async" style="transform-origin:70% 33%">
-      </div>
+      <canvas class="selva" data-escena="aves" aria-hidden="true"></canvas>
       <div class="pieza grande late" style="background-image:url(img/07_confirmacion.webp);-webkit-mask-image:url(img/m07_asistencia.png);mask-image:url(img/m07_asistencia.png);--ox:30%;--oy:67%;--z:1.15"></div>
       <a class="zona" data-accion="confirmar" target="_blank" rel="noopener" aria-label="Confirmar asistencia por WhatsApp"
          style="left:5.5%;top:63.8%;width:49%;height:6.4%"></a>
@@ -185,6 +151,8 @@
   <script src="config.js"></script>
   <script src="js/comun.js"></script>
   <script src="js/details.js"></script>
+  <script src="js/mallas.js"></script>
+  <script src="js/animales.js"></script>
   <script src="js/index.js"></script>
 </body>
 </html>

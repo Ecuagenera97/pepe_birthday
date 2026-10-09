@@ -34,6 +34,7 @@
     limpiar(viene);
     sale.classList.remove("quieto");
 
+    if (window.ANIMALES) { ANIMALES.salir(sale); ANIMALES.entrar(viene); }
     if (reducido) {
       sale.classList.remove("activo"); viene.classList.add("activo");
       cur = n; pintar(); ocupado = false; asentar(viene); precargar(n + 1); return;
@@ -143,6 +144,7 @@
   function entrar() {
     if (terminado) return;
     terminado = true; dibujando = false;
+    if (slides[0].classList.contains("espera") && window.ANIMALES) ANIMALES.entrar(slides[0]);
     slides[0].classList.remove("espera");
     libro.classList.add("abriendo");
     lienzo.classList.add("fin");
@@ -159,7 +161,7 @@
       lienzo.classList.add("reproduce");
       libro.style.transition = "none";            // el primer cuadro es idéntico a la portada
       libro.classList.add("abriendo");
-      setTimeout(function () { slides[0].classList.remove("espera"); }, 900);
+      setTimeout(function () { slides[0].classList.remove("espera"); if (window.ANIMALES) ANIMALES.entrar(slides[0]); }, 900);
     }, { once: true });
     video.addEventListener("ended", function () { clearTimeout(respaldo); entrar(); }, { once: true });
     video.addEventListener("error", function () { clearTimeout(respaldo); entrar(); }, { once: true });
@@ -175,6 +177,7 @@
     if (n >= 0 && n < total) {
       abierto = terminado = true; libro.classList.add("fuera"); lienzo.classList.add("fuera");
       slides[0].classList.remove("activo", "espera"); cur = n; slides[n].classList.add("activo"); pintar(); asentar(slides[n]);
+      if (window.ANIMALES) ANIMALES.entrar(slides[n]);
     }
   }
 })();
