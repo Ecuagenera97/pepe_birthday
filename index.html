@@ -138,8 +138,10 @@
       <!-- Zona clicable sobre el sello -->
       <button class="zona redonda sello" id="sello" type="button" aria-label="Abrir la invitación"></button>
     </div>
-    <!-- El video va fuera del libro para poder fundirse con la hoja que está debajo -->
-    <video class="apertura" id="apertura" muted playsinline webkit-playsinline preload="auto" tabindex="-1" aria-hidden="true">
+    <!-- El video se dibuja en un lienzo donde la luz blanca de la abertura se vuelve transparente,
+         así la primera hoja aparece poco a poco por el hueco de las puertas -->
+    <canvas class="apertura lienzo" id="lienzo" aria-hidden="true"></canvas>
+    <video class="video-fuente" id="apertura" muted playsinline webkit-playsinline preload="auto" tabindex="-1" aria-hidden="true">
       <source src="video/apertura.mp4" type="video/mp4">
     </video>
   </main>

@@ -68,13 +68,12 @@ a, button { touch-action: manipulation; }
 .libro .sello { left: 35%; top: 40.5%; width: 30%; height: 17.5%; z-index: 3; }
 .libro.abriendo { opacity: 0; pointer-events: none; }
 .libro.fuera { display: none; }
-.apertura {
-  z-index: 11; object-fit: cover; opacity: 0; pointer-events: none;
-  mix-blend-mode: multiply;               /* el blanco de la abertura deja ver la hoja */
-}
+.apertura { z-index: 11; object-fit: cover; opacity: 0; pointer-events: none; }
 .apertura.reproduce { opacity: 1; }
 .apertura.fin { opacity: 0; transition: opacity .35s; }
 .apertura.fuera { display: none; }
+/* el video real queda invisible: solo alimenta al lienzo */
+.video-fuente { position: absolute; width: 2px; height: 2px; left: 0; top: 0; opacity: 0; pointer-events: none; }
 
 /* ============================================================
    LIBRETA: marco de cuero con filo dorado; las hojas se pasan

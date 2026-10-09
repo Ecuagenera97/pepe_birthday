@@ -108,28 +108,58 @@
   pintar();
   window.addEventListener("load", function () { for (var i = 1; i < total; i++) precargar(i); });
 
-  /* ---------- Portada: tocar el sello -> el video abre el libro y deja ver la primera hoja ---------- */
+  /* ---------- Portada: tocar el sello -> el video abre el libro y deja ver la primera hoja ----------
+     Cada cuadro del video se dibuja en un lienzo; lo que es luz blanca (la abertura entre las
+     puertas) se vuelve transparente, y por ahí aparece la hoja que está debajo. */
   var libro = document.getElementById("libro");
   var video = document.getElementById("apertura");
-  var abierto = false, terminado = false;
+  var lienzo = document.getElementById("lienzo");
+  var ctx = null;
+  try { ctx = lienzo.getContext("2d", { willReadFrequently: true }); } catch (e) {}
+  var abierto = false, terminado = false, dibujando = false;
+  var CLARO = 246, OSCURO = 200;                 // luminancia: >=246 transparente, <=200 opaco
+
+  function cuadro() {
+    if (!dibujando) return;
+    try {
+      var w = lienzo.width, h = lienzo.height;
+      ctx.drawImage(video, 0, 0, w, h);
+      var img = ctx.getImageData(0, 0, w, h), d = img.data, k = 255 / (CLARO - OSCURO);
+      for (var i = 0; i < d.length; i += 4) {
+        var L = (d[i] * 54 + d[i + 1] * 183 + d[i + 2] * 19) >> 8;
+        if (L > OSCURO) { var a = (CLARO - L) * k; d[i + 3] = a < 0 ? 0 : a; }
+      }
+      ctx.putImageData(img, 0, 0);
+    } catch (e) { dibujando = false; respaldoSinLienzo(); return; }
+    if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(cuadro);
+    else requestAnimationFrame(cuadro);
+  }
+  /* si el lienzo no funciona en algún equipo: el video se desvanece sobre la hoja */
+  function respaldoSinLienzo() {
+    lienzo.classList.add("fin");
+    libro.style.transition = "opacity 1s ease"; libro.classList.add("abriendo");
+  }
 
   function entrar() {
     if (terminado) return;
-    terminado = true;
+    terminado = true; dibujando = false;
     slides[0].classList.remove("espera");
     libro.classList.add("abriendo");
-    video.classList.add("fin");
-    setTimeout(function () { libro.classList.add("fuera"); video.classList.add("fuera"); asentar(slides[0]); }, 400);
+    lienzo.classList.add("fin");
+    setTimeout(function () { libro.classList.add("fuera"); lienzo.classList.add("fuera"); video.pause(); asentar(slides[0]); }, 400);
   }
   function abrir() {
     if (abierto) { entrar(); return; }            // segundo toque: entra de inmediato
     abierto = true;
-    if (reducido || !video.play) { entrar(); return; }
+    if (reducido || !video.play || !ctx) { entrar(); return; }
     var respaldo = setTimeout(entrar, 3500);      // si el video no arranca, no se queda pegado
     video.addEventListener("playing", function () {
-      video.classList.add("reproduce");
-      libro.classList.add("abriendo");            // la portada fija se retira; queda el video fundido con la hoja
-      setTimeout(function () { slides[0].classList.remove("espera"); }, 1100);
+      lienzo.width = video.videoWidth || 720; lienzo.height = video.videoHeight || 1280;
+      dibujando = true; cuadro();
+      lienzo.classList.add("reproduce");
+      libro.style.transition = "none";            // el primer cuadro es idéntico a la portada
+      libro.classList.add("abriendo");
+      setTimeout(function () { slides[0].classList.remove("espera"); }, 900);
     }, { once: true });
     video.addEventListener("ended", function () { clearTimeout(respaldo); entrar(); }, { once: true });
     video.addEventListener("error", function () { clearTimeout(respaldo); entrar(); }, { once: true });
@@ -143,7 +173,7 @@
   if (/pagina=\d/.test(location.hash)) {
     var n = parseInt(location.hash.replace(/\D+/g, ""), 10) - 1;
     if (n >= 0 && n < total) {
-      abierto = terminado = true; libro.classList.add("fuera"); video.classList.add("fuera");
+      abierto = terminado = true; libro.classList.add("fuera"); lienzo.classList.add("fuera");
       slides[0].classList.remove("activo", "espera"); cur = n; slides[n].classList.add("activo"); pintar(); asentar(slides[n]);
     }
   }
