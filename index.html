@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#111a13">
+  <meta name="theme-color" content="#0b130d">
   <title>Pepe Portilla · 60 años – ¡Te esperamos!</title>
 
   <!-- Vista previa al compartir por WhatsApp (WhatsApp no ejecuta JavaScript,
@@ -19,25 +19,106 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" href="img/favicon.png" type="image/png">
-  <link rel="preload" as="image" href="img/01_libro_cerrado.webp" fetchpriority="high">
-  <link rel="prefetch" href="details.html">
+  <link rel="preload" as="image" href="img/00_portada.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="img/03_portada.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <main class="escena">
-    <div class="libro" id="libro">
+  <main class="escena" id="escena">
 
-      <!-- Libro cerrado -->
-      <div class="capa cerrado">
-        <img src="img/01_libro_cerrado.webp" alt="Invitación cerrada con sello de lacre: Pepe Portilla, 60 años" width="1080" height="1920" fetchpriority="high">
+    <!-- ===== Páginas de la invitación (se pasan con "Siguiente" o deslizando) ===== -->
+    <div class="stage" id="stage">
+      <div class="slides" id="slides">
+
+    <section class="hoja slide" aria-label="Invitación">
+          <img src="img/03_portada.webp" width="1080" height="1920"
+               alt="Pepe Portilla. Usted está cordialmente invitado a celebrar 60 años.">
+        </section>
+
+    <section class="slide slide-cuenta">
+    <p class="cuenta-tit">Pepe Portilla<small>60 años</small></p>
+    <div class="cuenta" aria-label="Cuenta regresiva">
+          <p class="titulo">Faltan</p>
+          <p class="para" id="para" hidden>Invitación para <strong id="para-nombre"></strong></p>
+          <div class="reloj" id="reloj" role="timer" aria-live="off">
+            <div class="u"><span class="n" data-u="d">00</span><span class="l">Días</span></div>
+            <div class="u"><span class="n" data-u="h">00</span><span class="l">Horas</span></div>
+            <div class="u"><span class="n" data-u="m">00</span><span class="l">Min.</span></div>
+            <div class="u"><span class="n" data-u="s">00</span><span class="l">Seg.</span></div>
+          </div>
+          <div class="calendario" id="calendario">
+            <a class="btn-cal" id="cal-google" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Google Calendar</a>
+            <button class="btn-cal" id="cal-ics" type="button">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>iPhone / Outlook</button>
+          </div>
+        </div>
+    <p class="cuenta-pie">Te esperamos</p></section>
+
+    <section class="hoja slide" aria-label="Fecha y lugar">
+          <img src="img/04_fecha_lugar.webp" width="1080" height="1920" decoding="async"
+               alt="Sábado 9 de enero, 4pm. El evento tendrá lugar en Uzhupud Garden, Paute - Ecuador.">
+          <a class="zona" data-accion="mapa" target="_blank" rel="noopener" aria-label="Ver ubicación en el mapa"
+             style="left:33.5%;top:74.5%;width:31.7%;height:3.3%"></a>
+        </section>
+
+    <section class="hoja slide" aria-label="Agenda de la noche">
+          <img src="img/05_agenda.webp" width="1080" height="1920" decoding="async"
+               alt="Agenda de la noche: ceremonia en la Capilla San José 16h00, cóctel 17h00 a 18h45, cena de recepción 19h00 a 20h00, fiesta de celebración 20h30.">
+        </section>
+
+    <section class="hoja slide" aria-label="Código de vestimenta">
+          <img src="img/06_vestimenta.webp" width="1080" height="1920" decoding="async"
+               alt="Código de vestimenta: traje formal. Verdes y sus tonalidades. Reservados para el cumpleañero.">
+        </section>
+
+    <section class="hoja slide" aria-label="Confirmación de asistencia">
+          <img src="img/07_confirmacion.webp" width="1080" height="1920" decoding="async"
+               alt="Agradecemos su confirmación hasta el 27 de diciembre del 2026.">
+          <a class="zona" data-accion="confirmar" target="_blank" rel="noopener" aria-label="Confirmar asistencia por WhatsApp"
+             style="left:9.5%;top:65%;width:43%;height:5%"></a>
+        </section>
+
+    <section class="hoja slide" aria-label="Hospedaje con tarifa especial">
+          <img src="img/08_hospedaje.webp" width="1080" height="1920" decoding="async"
+               alt="Hospedaje, tarifa especial disponible para nuestros amigos. Hotel Uzhupud Garden.">
+          <a class="zona" data-accion="hospedaje" target="_blank" rel="noopener" aria-label="Reservar hospedaje por WhatsApp"
+             style="left:50.5%;top:61.2%;width:39%;height:4.6%"></a>
+        </section>
+
+    <section class="hoja slide" aria-label="Obsequio">
+          <img src="img/09_obsequio.webp" width="1080" height="1920" decoding="async"
+               alt="Obsequio. Su obsequio en sobre cerrado o transferencia será donado para la Fundación Santa María de la Esperanza. Te esperamos.">
+          <a class="zona suave" data-accion="obsequio" target="_blank" rel="noopener" aria-label="Fundación Santa María de la Esperanza"
+             style="left:34.4%;top:56.1%;width:31.3%;height:5.3%"></a>
+        </section>
+
       </div>
-      <!-- Libro abierto (aparece al tocar el sello) -->
-      <div class="capa interior" aria-hidden="true">
-        <img src="img/02_libro_abierto.webp" alt="" width="1080" height="1920" decoding="async">
-      </div>
+
+      <!-- Indicador de página (arriba) -->
+      <div class="puntos" id="puntos" aria-hidden="true"></div>
+
+      <!-- Controles (abajo) -->
+      <nav class="mando" aria-label="Navegación">
+        <button class="atras" id="atras" type="button" aria-label="Página anterior">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <button class="siguiente" id="siguiente" type="button">
+          <span id="sig-texto">Siguiente</span>
+          <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ===== Portada: libro cerrado; al tocar el sello se abre (video) ===== -->
+    <div class="libro" id="libro">
+      <img class="base" src="img/00_portada.webp" alt="Invitación cerrada con sello: Pepe Portilla, 60 años" width="720" height="1280" fetchpriority="high">
+      <video class="apertura" id="apertura" muted playsinline webkit-playsinline preload="auto" tabindex="-1" aria-hidden="true">
+        <source src="video/apertura.mp4" type="video/mp4">
+      </video>
 
       <!-- Nombre del invitado (desde ?nombre=...) -->
       <div class="invitado" id="invitado">
@@ -52,10 +133,14 @@
     </div>
   </main>
 
-  <noscript><p style="text-align:center;padding:24px"><a style="color:#d8b36a" href="details.html">Ver la invitación</a></p></noscript>
+  <button class="musica" id="musica" type="button" hidden aria-label="Reproducir música">
+    <svg viewBox="0 0 24 24" id="musica-icono"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+  <audio id="audio" loop preload="none"></audio>
 
   <script src="config.js"></script>
   <script src="js/comun.js"></script>
+  <script src="js/details.js"></script>
   <script src="js/index.js"></script>
 </body>
 </html>

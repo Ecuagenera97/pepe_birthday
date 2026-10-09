@@ -2,7 +2,6 @@
 (function () {
   var U = window.UTIL, C = U.C;
   var invitado = U.nombre();
-  if (C.tituloPestana) document.title = "Detalles del Evento · " + C.festejado;
 
   /* ---------- Enlaces de los botones ---------- */
   var enlaces = {
@@ -69,22 +68,6 @@
     a.href = URL.createObjectURL(new Blob([txt], { type: "text/calendar;charset=utf-8" }));
     a.download = "cumpleanos-pepe-portilla.ics";
     document.body.appendChild(a); a.click(); a.remove();
-  });
-
-  /* ---------- Aparición suave al desplazarse ---------- */
-  var rev = document.querySelectorAll(".reveal");
-  if ("IntersectionObserver" in window && !U.reducido()) {
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("visible"); io.unobserve(x.target); } });
-    }, { threshold: 0.08, rootMargin: "0px 0px -4% 0px" });
-    Array.prototype.forEach.call(rev, function (r) { io.observe(r); });
-  } else {
-    Array.prototype.forEach.call(rev, function (r) { r.classList.add("visible"); });
-  }
-
-  /* ---------- Precarga: al terminar la primera carga se descargan todas las páginas ---------- */
-  window.addEventListener("load", function () {
-    Array.prototype.forEach.call(document.querySelectorAll('img[loading="lazy"]'), function (i) { i.loading = "eager"; });
   });
 
   /* ---------- Música (opcional, desde config.js) ---------- */

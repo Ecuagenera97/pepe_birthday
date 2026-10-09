@@ -2,8 +2,8 @@
 
 Sitio web estático (sin servidor, sin Claude): se publica con GitHub Pages.
 
-- `index.html?nombre=Sr.+Juan+Pérez+y+Sra` → portada con sello. Al tocarlo pasa a `details.html` conservando el nombre.
-- `details.html` → cuenta regresiva, fecha y lugar, agenda, vestimenta, confirmación, hospedaje y obsequio.
+- `index.html?nombre=Sr.+Juan+Pérez+y+Sra` → portada del libro con el sello "PP". Al tocarlo, un video abre el libro y se pasa a las páginas **una por una** con el botón **Siguiente** (o deslizando el dedo / flechas del teclado): portada, cuenta regresiva, fecha y lugar, agenda, vestimenta, confirmación, hospedaje y obsequio.
+- `details.html` → solo redirige a `index.html` (por si algún link viejo lo usa).
 - `generador.html` → crea el link de cada invitado y lo envía por WhatsApp.
 
 ## Estructura del proyecto
@@ -11,10 +11,12 @@ Sitio web estático (sin servidor, sin Claude): se publica con GitHub Pages.
 | Archivo / carpeta | Qué contiene | ¿Cuándo se edita? |
 |---|---|---|
 | **`config.js`** | Fecha y hora del evento, link del mapa, teléfonos y mensajes de WhatsApp, link de la fundación, música | Casi siempre aquí |
-| `img/01_…09_*.webp` | Las 9 páginas de la invitación (arte del diseñador) | Solo si cambia el diseño (fechas, horas, agenda…) |
+| `video/apertura.mp4` | Video corto que abre el libro al tocar el sello | Solo si cambia el diseño de la portada |
+| `img/00_portada.webp` | Primer cuadro del video (la portada cerrada). Debe verse igual que el inicio del video | Junto con el video |
+| `img/03_…09_*.webp` | Las 7 páginas de la invitación (arte del diseñador) | Solo si cambia el diseño (fechas, horas, agenda…) |
+| `img/01_…, 02_…` | Imágenes de la portada anterior (ya no se usan) | Se pueden borrar |
 | `img/compartir.jpg` | Imagen que sale al compartir el link en WhatsApp (1200×630) | Si cambia el diseño |
-| `index.html` | Portada. Líneas "og:" = vista previa de WhatsApp | Solo si cambia el título o la dirección del sitio |
-| `details.html` | Páginas y posición de los botones (`style="left:…;top:…"`) | Solo para mover un botón |
+| `index.html` | Portada + todas las páginas y la posición de los botones (`style="left:…;top:…"`). Líneas "og:" = vista previa de WhatsApp | Solo para mover un botón o cambiar el título/dirección |
 | `css/styles.css`, `js/*.js` | Diseño y funcionamiento | No |
 | `musica/` | Aquí va un .mp3 si quieren música | Opcional |
 | `.nojekyll` | Necesario para GitHub Pages | No tocar |
