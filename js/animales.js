@@ -153,129 +153,113 @@
   };
 
   /* =====================================================================
-     MOVIMIENTOS. Cada función recibe (animal, t segundos en la fase, fase)
-     y devuelve la pose. Fases: "entra" -> "reposo" -> "sale".
-     Ángulos en radianes; x,y en fracción de la caja del animal.
+     MOVIMIENTOS. Los animales se quedan en su sitio del diseño y se mueven
+     como lo haría un animal posado o echado: miran, respiran, acomodan un
+     ala. Al abrir la hoja hacen un "saludo" (giran a mirar al invitado).
+     Cada función recibe (animal, t segundos, fase) y devuelve la pose.
      ===================================================================== */
   var G = Math.PI / 180;
 
-  /* --- vuelo con aleteo: trayectoria desde (x0,y0) hasta (0,0) --- */
-  function vuelo(a, t, fase, cfg) {
-    var dur = cfg.dur, s = cfg.semilla;
-    if (fase === "entra") {
-      var u = clamp((t - cfg.retardo) / dur, 0, 1);
-      if (t < cfg.retardo) return { op: 0 };
-      var e1 = easeOut(u);
-      /* arco: sube un poco y baja al posarse */
-      var x = lerp(cfg.x0, 0, e1), y = lerp(cfg.y0, 0, e1) - Math.sin(u * Math.PI) * cfg.arco;
-      var aleteo = u < .9 ? 1 : (1 - (u - .9) / .1);                  // deja de aletear al posarse
-      var flap = Math.sin(t * cfg.hz * 2 * Math.PI);
-      var ala = cfg.alaDir * (cfg.alaAmp * .6 + cfg.alaAmp * .4 * flap) * aleteo;
-      var cuerpo = cfg.rot0 * (1 - e1) + 1.2 * G * flap * aleteo;
-      var ang = { ala: ala, cabeza: cfg.cabDir * 10 * G * (1 - e1) };
-      if (a.huesos.cola) ang.cola = -cfg.alaDir * 6 * G * flap * aleteo;
-      var y2 = y + 0.012 * flap * aleteo;                              // el cuerpo sube y baja con cada aleteo
-      if (u >= 1) { a.fase = "reposo"; a.tFase += t; return vuelo(a, 0, "reposo", cfg); }
-      return { x: x, y: y2, rot: cuerpo, op: clamp(u * 6, 0, 1), ang: ang, oy: .4 };
-    }
-    if (fase === "reposo") {
-      var ang2 = { cabeza: mirada(t, cfg.periodo, cfg.cabAmp * G, s) };
-      /* de vez en cuando acomoda el ala */
-      var f = ((t + s) % 9) / 9; var acomoda = f > .85 && f < .95 ? Math.sin((f - .85) / .1 * Math.PI) : 0;
-      ang2.ala = cfg.alaDir * 10 * G * acomoda;
-      if (a.huesos.cola) ang2.cola = 1.5 * G * Math.sin(t * 1.1 + s);
-      var resp = 1 + 0.008 * Math.sin(t * 2.1 + s);
-      return { escy: resp, escx: 1 + 0.004 * Math.sin(t * 2.1 + s), oy: 1, ang: ang2 };
-    }
-    /* sale volando */
-    var u2 = clamp(t / .6, 0, 1), flap2 = Math.sin(t * cfg.hz * 2 * Math.PI);
-    return { x: cfg.x0 * easeIn(u2) * .8, y: -1.2 * easeIn(u2), rot: cfg.rot0 * u2, op: 1 - u2 * u2,
-             ang: { ala: cfg.alaDir * (cfg.alaAmp * .5 + cfg.alaAmp * .5 * flap2) } };
+  /* saludo inicial: gira la cabeza hacia el invitado, se queda y vuelve */
+  function saludo(t, retardo, dur, amp) {
+    var u = clamp((t - retardo) / dur, 0, 1);
+    if (u <= 0) return 0;
+    if (u < .3) return amp * ease(u / .3);
+    if (u < .7) return amp;
+    return amp * (1 - ease((u - .7) / .3));
+  }
+  function parpadeo(t, periodo, s) {            /* 0..1 breve, para "acomodos" ocasionales */
+    var f = ((t + s) % periodo) / periodo, k = .06;
+    return f > 1 - k ? Math.sin((f - (1 - k)) / k * Math.PI) : 0;
   }
 
-  /* --- el oso asoma de entre las matas y mira al invitado --- */
+  /* --- guacamayo posado --- */
+  function guacamayo(cfg) {
+    return function (a, t, fase) {
+      var s = cfg.semilla, cab, ala = 0, cola, resp;
+      if (fase === "entra") {
+        if (t > cfg.retardo + 2.6) { a.fase = "reposo"; a.tFase += t; return a.d.mover(a, 0, "reposo"); }
+        cab = saludo(t, cfg.retardo, 2.4, -9 * G);                  /* gira a mirar hacia el centro */
+        ala = -14 * G * Math.sin(clamp((t - cfg.retardo - .3) / .9, 0, 1) * Math.PI); /* estira el ala una vez */
+      } else {
+        cab = mirada(t, 7 + s, 8 * G, s) + 1.2 * G * ruido(t * .6, s);
+        ala = -12 * G * parpadeo(t, 11 + s, s * 2);
+      }
+      cola = 1.6 * G * Math.sin(t * .9 + s) + 0.6 * G * ruido(t * .4, s + 1);
+      resp = 1 + 0.006 * Math.sin(t * 2.0 + s);
+      return { escy: resp, escx: 1 + 0.003 * Math.sin(t * 2.0 + s), oy: .45, ang: { cabeza: cab, ala: ala, cola: cola } };
+    };
+  }
+  /* --- tucán posado (ambos) --- */
+  function tucanPosado(cfg) {
+    return function (a, t, fase) {
+      var s = cfg.semilla, cab, ala = 0;
+      if (fase === "entra") {
+        if (t > cfg.retardo + 2.6) { a.fase = "reposo"; a.tFase += t; return a.d.mover(a, 0, "reposo"); }
+        cab = saludo(t, cfg.retardo, 2.4, cfg.dir * 8 * G);
+      } else {
+        cab = mirada(t, 7.5 + s, cfg.dir * 7 * G, s) + 1.0 * G * ruido(t * .6, s);
+        if (a.huesos.ala) ala = cfg.dir * 9 * G * parpadeo(t, 13 + s, s);
+      }
+      /* pequeño balanceo del cuerpo, como un ave que acomoda el peso */
+      var bal = 0.4 * G * Math.sin(t * .7 + s);
+      return { rot: bal, oy: .95, escy: 1 + 0.005 * Math.sin(t * 1.9 + s), ang: { cabeza: cab, ala: ala } };
+    };
+  }
+  /* --- oso asomado entre las matas --- */
   function oso(a, t, fase) {
-    var clip = [-.2, -.6, 1.2, 1.0];                               // no se dibuja por debajo de su sitio (queda tras las matas)
+    var cab, lev = 0;
     if (fase === "entra") {
-      if (t < .5) return { y: .95, clip: clip };
-      var u = clamp((t - .5) / 2.0, 0, 1);
-      if (u >= 1) { a.fase = "reposo"; a.tFase += t; return oso(a, 0, "reposo"); }
-      var y = .95 * (1 - back(u)) ;
-      return { y: y, clip: clip, ang: { cabeza: -6 * G * Math.sin(u * Math.PI) }, oy: 1 };
+      if (t > 3.4) { a.fase = "reposo"; a.tFase += t; return oso(a, 0, "reposo"); }
+      var u = clamp((t - .4) / 1.6, 0, 1);
+      cab = -9 * G * ease(u) * (t < 2.4 ? 1 : 1 - ease((t - 2.4) / 1.0));       /* levanta la cabeza hacia el invitado */
+      lev = -0.012 * Math.sin(u * Math.PI);
+    } else {
+      cab = mirada(t, 8.5, -8 * G, 1.3) + 1.0 * G * ruido(t * .5, 1.3);
+      lev = -0.006 * Math.max(0, -cab) / (8 * G);
     }
-    if (fase === "reposo") {
-      var resp = 1 + 0.012 * Math.sin(t * 1.6);
-      /* mira al invitado: levanta la cabeza y la ladea */
-      var cab = mirada(t, 7.5, -8 * G, 1.3);
-      return { escy: resp, escx: 1 + 0.005 * Math.sin(t * 1.6), oy: 1, clip: clip, ang: { cabeza: cab }, mov: { cabeza: [0, -0.01 * Math.sin(t * 1.6)] } };
-    }
-    var u2 = easeIn(clamp(t / .55, 0, 1));
-    return { y: .95 * u2, clip: clip, oy: 1 };
+    var resp = 1 + 0.012 * Math.sin(t * 1.5);
+    return { escy: resp, escx: 1 + 0.004 * Math.sin(t * 1.5), oy: 1, ang: { cabeza: cab }, mov: { cabeza: [0, lev] } };
   }
-
-  /* --- el jaguar llega caminando desde la derecha y se recuesta --- */
+  /* --- jaguar echado --- */
   function jaguar(a, t, fase) {
+    var cab, pata = 0;
     if (fase === "entra") {
-      var R = .7, D = 2.4;
-      if (t < R) return { x: 1.3, op: 0 };
-      var u = clamp((t - R) / D, 0, 1);
-      if (u >= 1) { a.fase = "reposo"; a.tFase += t; return jaguar(a, 0, "reposo"); }
-      var x = 1.3 * (1 - easeOut(u));
-      var paso = (t - R) * 2.6 * Math.PI;                             // ritmo del paso
-      var marcha = u < .8 ? 1 : (1 - (u - .8) / .2);                  // al final deja de caminar
-      var bob = Math.abs(Math.sin(paso)) * 0.025 * marcha;
-      var recuesta = u > .8 ? Math.sin((u - .8) / .2 * Math.PI) : 0; // pequeño "acomodo" al echarse
-      return { x: x, y: -bob + 0.02 * recuesta, rot: -1.2 * G * Math.sin(paso) * marcha, oy: 1, escy: 1 + 0.03 * recuesta,
-               ang: { pataa: 9 * G * Math.sin(paso) * marcha, patab: -9 * G * Math.sin(paso) * marcha, cabeza: -3 * G * Math.sin(paso * 2) * marcha - 4 * G * marcha } };
+      if (t > 3.6) { a.fase = "reposo"; a.tFase += t; return jaguar(a, 0, "reposo"); }
+      cab = saludo(t, .6, 2.6, -8 * G);                                           /* gira a mirar al centro */
+    } else {
+      cab = mirada(t, 9.5, -7 * G, 2.2) + 0.8 * G * ruido(t * .5, 2.2);
+      pata = 3 * G * parpadeo(t, 12, 4);                                           /* acomoda la pata de vez en cuando */
     }
-    if (fase === "reposo") {
-      var resp = 1 + 0.01 * Math.sin(t * 1.4 + 2);
-      var cab = mirada(t, 9, -7 * G, 2.2);
-      /* de vez en cuando mueve una pata */
-      var f = ((t + 4) % 11) / 11, p = f > .8 && f < .9 ? Math.sin((f - .8) / .1 * Math.PI) : 0;
-      return { escy: resp, oy: 1, ang: { cabeza: cab, pataa: 4 * G * p }, mov: { cabeza: [-0.01 * Math.abs(cab) / (7 * G), 0] } };
-    }
-    var u2 = easeIn(clamp(t / .6, 0, 1)), paso2 = t * 2.6 * Math.PI;
-    return { x: 1.3 * u2, y: -Math.abs(Math.sin(paso2)) * .02, oy: 1, ang: { pataa: 9 * G * Math.sin(paso2), patab: -9 * G * Math.sin(paso2) } };
+    var resp = 1 + 0.009 * Math.sin(t * 1.3 + 2);
+    return { escy: resp, oy: 1, ang: { cabeza: cab, pataa: pata }, mov: { cabeza: [-0.006 * Math.max(0, -cab) / (7 * G), 0] } };
   }
-
-  /* --- colibrí: llega zumbando, queda suspendido un instante y se posa --- */
+  /* --- colibrí posado: mira, y de vez en cuando vibra las alas un instante --- */
   function colibri(a, t, fase) {
-    var hz = 14, flap = Math.sin(t * hz * 2 * Math.PI);
+    var cab, z = 0;
     if (fase === "entra") {
-      if (t < .2) return { op: 0 };
-      var u = clamp((t - .2) / 2.3, 0, 1);
-      if (u >= 1) { a.fase = "reposo"; a.tFase += t; return colibri(a, 0, "reposo"); }
-      /* trayectoria: entra desde abajo a la izquierda, se detiene en el aire (suspendido) y baja a la rama */
-      var e1 = easeOut(clamp(u / .55, 0, 1)), e2 = ease(clamp((u - .7) / .3, 0, 1));
-      var x = lerp(-.9, -.18, e1) + lerp(0, .18, e2), y = lerp(.8, -.22, e1) + lerp(0, .22, e2);
-      var susp = u > .5 && u < .72 ? 1 : 0;
-      y += 0.015 * Math.sin(t * 9) * (1 - e2);
-      var aleteo = 1 - e2;
-      return { x: x, y: y, rot: -6 * G * (1 - e1) + 2 * G * Math.sin(t * 9) * aleteo, op: clamp(u * 8, 0, 1), oy: .5,
-               ang: { ala: (-28 * G + 22 * G * flap) * aleteo, cabeza: 5 * G * (1 - e1) } };
+      if (t > 3.2) { a.fase = "reposo"; a.tFase += t; return colibri(a, 0, "reposo"); }
+      cab = saludo(t, .3, 2.4, 6 * G);
+      z = t > .9 && t < 1.5 ? 1 : 0;
+    } else {
+      cab = mirada(t, 5.5, 6 * G, 3.1) + 1.2 * G * ruido(t * .9, 3.1);
+      var f = ((t + 2) % 8) / 8; z = f > .84 && f < .92 ? 1 : 0;
     }
-    if (fase === "reposo") {
-      var cab = mirada(t, 5.5, 6 * G, 3.1);
-      var f = ((t + 2) % 7) / 7, z = f > .82 && f < .92 ? 1 : 0;        // zumbido corto de vez en cuando
-      return { escy: 1 + 0.01 * Math.sin(t * 2.4), oy: 1, y: -0.006 * Math.sin(t * 2.4), ang: { cabeza: cab, ala: (-12 * G + 10 * G * flap) * z } };
-    }
-    var u2 = easeIn(clamp(t / .6, 0, 1));
-    return { x: -0.8 * u2, y: -0.9 * u2, op: 1 - u2 * u2, ang: { ala: -28 * G + 22 * G * flap } };
+    var flap = Math.sin(t * 16 * 2 * Math.PI);
+    return { escy: 1 + 0.008 * Math.sin(t * 2.6), oy: 1, ang: { cabeza: cab, ala: (-10 * G + 9 * G * flap) * z } };
   }
 
-  /* ---------- definiciones por hoja ---------- */
   var DEF = {
     selva: [
-      { malla: "guac1", mover: function (a, t, f) { return vuelo(a, t, f, { retardo: .15, dur: 1.9, x0: -.9, y0: -.7, arco: .12, hz: 5.2, alaAmp: 38 * G, alaDir: -1, rot0: -12 * G, cabDir: 1, periodo: 6.5, cabAmp: 9, semilla: 0.4 }); } },
-      { malla: "guac2", mover: function (a, t, f) { return vuelo(a, t, f, { retardo: .55, dur: 1.9, x0: -.9, y0: -.9, arco: .12, hz: 5.0, alaAmp: 38 * G, alaDir: -1, rot0: -12 * G, cabDir: 1, periodo: 7.5, cabAmp: 9, semilla: 1.9 }); } },
-      { malla: "tucan", mover: function (a, t, f) { return vuelo(a, t, f, { retardo: .9, dur: 1.7, x0: .9, y0: -1.2, arco: .15, hz: 4.6, alaAmp: 30 * G, alaDir: 1, rot0: 10 * G, cabDir: -1, periodo: 7, cabAmp: 8, semilla: 2.7 }); } },
+      { malla: "guac1", mover: guacamayo({ retardo: .2, semilla: 0.4 }) },
+      { malla: "guac2", mover: guacamayo({ retardo: .7, semilla: 1.9 }) },
+      { malla: "tucan", mover: tucanPosado({ retardo: .5, semilla: 2.7, dir: 1 }) },
       { malla: "oso", mover: oso },
       { malla: "jaguar", mover: jaguar }
     ],
     aves: [
       { malla: "colibri", mover: colibri },
-      { malla: "tucan7", mover: function (a, t, f) { return vuelo(a, t, f, { retardo: .7, dur: 1.8, x0: .9, y0: -1.3, arco: .18, hz: 4.4, alaAmp: 0, alaDir: 1, rot0: 10 * G, cabDir: -1, periodo: 7.5, cabAmp: 7, semilla: 4.2 }); } }
+      { malla: "tucan7", mover: tucanPosado({ retardo: .6, semilla: 4.2, dir: 1 }) }
     ]
   };
 
@@ -316,8 +300,7 @@
     },
     salir: function (hoja) {
       var c = hoja.querySelector("canvas.selva"); if (!c || !c._escena || !c._escena.gl) return;
-      var e = c._escena, t = (performance.now() - e.t0) / 1000;
-      e.animales.forEach(function (a) { if (a.fase !== "fuera") { a.fase = "sale"; a.tFase = t; } });
+      var e = c._escena;
       setTimeout(function () { e.activa = false; e.animales.forEach(function (a) { a.fase = "fuera"; }); }, 700);
     },
     apagar: function (hoja) {
