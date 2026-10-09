@@ -34,14 +34,38 @@
     <div class="stage" id="stage">
       <div class="slides" id="slides">
 
-    <!-- 1. Portada: los animales se levantan al entrar y al salir -->
-    <section class="hoja slide" data-anim="animales" aria-label="Invitación">
+    <!-- 1. Portada: cada animal es una figura aparte (cuerpo, cabeza, alas) y llega con su propio movimiento -->
+    <section class="hoja slide" data-anim="selva" aria-label="Invitación">
       <img class="base" src="img/03_portada.webp" width="1440" height="2560"
            alt="Pepe Portilla. Usted está cordialmente invitado a celebrar 60 años.">
-      <div class="pieza" style="background-image:url(img/03_portada.webp);-webkit-mask-image:url(img/m03_guac.png);mask-image:url(img/m03_guac.png);--ox:13%;--oy:22%;--d:.05s"></div>
-      <div class="pieza" style="background-image:url(img/03_portada.webp);-webkit-mask-image:url(img/m03_tucan.png);mask-image:url(img/m03_tucan.png);--ox:89%;--oy:27%;--d:.2s"></div>
-      <div class="pieza" style="background-image:url(img/03_portada.webp);-webkit-mask-image:url(img/m03_oso.png);mask-image:url(img/m03_oso.png);--ox:12%;--oy:79%;--d:.35s"></div>
-      <div class="pieza" style="background-image:url(img/03_portada.webp);-webkit-mask-image:url(img/m03_jaguar.png);mask-image:url(img/m03_jaguar.png);--ox:87%;--oy:80%;--d:.5s"></div>
+      <div class="animal guac1 ave" style="left:0.0%;top:8.864%;width:17.75%;height:21.189%">
+        <img class="parte cuerpo" src="img/anim/guac1_cuerpo.webp" alt="" decoding="async">
+        <img class="parte ala" src="img/anim/guac1_ala.webp" alt="" decoding="async" style="transform-origin:62% 20%">
+        <img class="parte cabeza" src="img/anim/guac1_cabeza.webp" alt="" decoding="async" style="transform-origin:72% 15%">
+      </div>
+      <div class="animal guac2 ave" style="left:0.0%;top:19.981%;width:22.163%;height:19.352%">
+        <img class="parte cuerpo" src="img/anim/guac2_cuerpo.webp" alt="" decoding="async">
+        <img class="parte ala" src="img/anim/guac2_ala.webp" alt="" decoding="async" style="transform-origin:64% 23%">
+        <img class="parte cabeza" src="img/anim/guac2_cabeza.webp" alt="" decoding="async" style="transform-origin:76% 16%">
+      </div>
+      <div class="animal tucan ave" style="left:80.948%;top:22.019%;width:19.051%;height:10.601%">
+        <img class="parte cuerpo" src="img/anim/tucan_cuerpo.webp" alt="" decoding="async">
+        <img class="parte ala" src="img/anim/tucan_ala.webp" alt="" decoding="async" style="transform-origin:75% 33%">
+        <img class="parte cabeza" src="img/anim/tucan_cabeza.webp" alt="" decoding="async" style="transform-origin:68% 38%">
+      </div>
+      <div class="ventana" style="left:3.57%;top:64.571%;width:26.626%;height:22.219%">
+        <div class="animal oso" style="left:0;top:37.5%;width:100%;height:62.5%">
+          <img class="parte cuerpo" src="img/anim/oso_cuerpo.webp" alt="" decoding="async">
+          <img class="parte cabeza" src="img/anim/oso_cabeza.webp" alt="" decoding="async" style="transform-origin:68% 52%">
+        </div>
+      </div>
+      <div class="animal jaguar" style="left:73.144%;top:70.751%;width:26.855%;height:15.895%">
+        <img class="parte cuerpo" src="img/anim/jaguar_cuerpo.webp" alt="" decoding="async">
+        <img class="parte patab" src="img/anim/jaguar_patab.webp" alt="" decoding="async" style="transform-origin:50% 82%">
+        <img class="parte pataa" src="img/anim/jaguar_pataa.webp" alt="" decoding="async" style="transform-origin:60% 66%">
+        <img class="parte cabeza" src="img/anim/jaguar_cabeza.webp" alt="" decoding="async" style="transform-origin:38% 40%">
+      </div>
+      <img class="frente" src="img/anim/p03_frente.webp" alt="" decoding="async" style="left:4.722%;top:82.305%;width:72.986%;height:5.859%">
     </section>
 
     <!-- 2. Cuenta regresiva -->
@@ -91,12 +115,19 @@
            alt="Código de vestimenta: traje formal. Verdes y sus tonalidades. Reservados para el cumpleañero.">
     </section>
 
-    <!-- 6. Confirmación: colibrí y tucán llegan volando; botón Asistencia más grande y latiendo -->
+    <!-- 6. Confirmación: el colibrí y el tucán llegan volando; botón Asistencia más grande y latiendo -->
     <section class="hoja slide" data-anim="aves" aria-label="Confirmación de asistencia">
       <img class="base" src="img/07_confirmacion.webp" width="1440" height="2560" decoding="async"
            alt="Agradecemos su confirmación hasta el 27 de diciembre del 2026.">
-      <div class="pieza vuela izq" style="background-image:url(img/07_confirmacion.webp);-webkit-mask-image:url(img/m07_colibri.png);mask-image:url(img/m07_colibri.png);--ox:14%;--oy:14%"></div>
-      <div class="pieza vuela der" style="background-image:url(img/07_confirmacion.webp);-webkit-mask-image:url(img/m07_tucan.png);mask-image:url(img/m07_tucan.png);--ox:86%;--oy:63%;--d:.15s"></div>
+      <div class="animal colibri ave" style="left:4.444%;top:8.242%;width:27.917%;height:13.594%">
+        <img class="parte cuerpo" src="img/anim/colibri_cuerpo.webp" alt="" decoding="async">
+        <img class="parte ala" src="img/anim/colibri_ala.webp" alt="" decoding="async" style="transform-origin:29.65% 36%">
+        <img class="parte cabeza" src="img/anim/colibri_cabeza.webp" alt="" decoding="async" style="transform-origin:34.1% 30%">
+      </div>
+      <div class="animal tucan7 ave" style="left:73.75%;top:56.289%;width:25.556%;height:13.359%">
+        <img class="parte cuerpo" src="img/anim/tucan7_cuerpo.webp" alt="" decoding="async">
+        <img class="parte cabeza" src="img/anim/tucan7_cabeza.webp" alt="" decoding="async" style="transform-origin:70% 33%">
+      </div>
       <div class="pieza grande late" style="background-image:url(img/07_confirmacion.webp);-webkit-mask-image:url(img/m07_asistencia.png);mask-image:url(img/m07_asistencia.png);--ox:30%;--oy:67%;--z:1.15"></div>
       <a class="zona" data-accion="confirmar" target="_blank" rel="noopener" aria-label="Confirmar asistencia por WhatsApp"
          style="left:5.5%;top:63.8%;width:49%;height:6.4%"></a>

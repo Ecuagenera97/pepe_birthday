@@ -144,32 +144,131 @@ a, button { touch-action: manipulation; }
   45%      { transform: scale(calc(var(--z) + .05)); }
   60%      { transform: scale(calc(var(--z) - .01)); }
 }
-/* Animales de la portada: se levantan al llegar y al irse */
-[data-anim="animales"] .base { -webkit-mask: url(../img/m03_base.png) center / 100% 100% no-repeat; mask: url(../img/m03_base.png) center / 100% 100% no-repeat; }
-[data-anim="animales"].quieto .base, [data-anim="animales"].espera .base { -webkit-mask: none; mask: none; }
-[data-anim="animales"] .pieza { opacity: 0; transform: translateY(7%); }
-[data-anim="animales"].activo:not(.espera) .pieza { animation: sube .9s cubic-bezier(.2, .8, .25, 1) var(--d, 0s) both; }
-[data-anim="animales"].saliendo .pieza { animation: vuela-arriba .55s ease-in var(--d, 0s) both; }
-@keyframes sube { from { opacity: 0; transform: translateY(7%) scale(.96); } to { opacity: 1; transform: none; } }
-@keyframes vuela-arriba { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-12%) scale(1.04); } }
-/* Aves de la confirmación: llegan volando */
-[data-anim="aves"] .base { -webkit-mask: url(../img/m07_base.png) center / 100% 100% no-repeat; mask: url(../img/m07_base.png) center / 100% 100% no-repeat; }
-[data-anim="aves"].quieto .base { -webkit-mask: none; mask: none; }
-[data-anim="aves"] .pieza.vuela { opacity: 0; }
-[data-anim="aves"].activo .pieza.izq { animation: vuelo-izq 1.05s cubic-bezier(.25, .7, .3, 1) var(--d, 0s) both; }
-[data-anim="aves"].activo .pieza.der { animation: vuelo-der 1.05s cubic-bezier(.25, .7, .3, 1) var(--d, 0s) both; }
-@keyframes vuelo-izq {
-  0%   { opacity: 0; transform: translate(-45%, -18%) rotate(-10deg) scale(.9); }
-  25%  { opacity: 1; }
-  55%  { transform: translate(-12%, 6%) rotate(-4deg) scale(1.02); }
+/* ============================================================
+   ANIMALES: figuras por capas (cuerpo + cabeza + alas/patas).
+   Cada animal llega con su movimiento y luego "vive" en reposo.
+   ============================================================ */
+.animal, .ventana, .frente { position: absolute; pointer-events: none; }
+.animal { z-index: 3; will-change: transform, opacity; }
+.ventana { z-index: 3; overflow: hidden; }
+.frente { z-index: 4; height: auto; }
+.parte { position: absolute; inset: 0; width: 100%; height: 100%; display: block; will-change: transform; }
+
+/* --- estado inicial: fuera de escena hasta que la hoja se abre --- */
+[data-anim] .ave   { opacity: 0; }
+[data-anim] .oso    { transform: translateY(92%); }
+[data-anim] .jaguar { transform: translateX(130%); }
+
+/* ---------- GUACAMAYOS: llegan volando desde arriba a la izquierda ---------- */
+.activo:not(.espera) .guac1 { animation: llega-izq 1.7s cubic-bezier(.3,.6,.25,1) .15s both; }
+.activo:not(.espera) .guac2 { animation: llega-izq 1.7s cubic-bezier(.3,.6,.25,1) .55s both; }
+.activo:not(.espera) .guac1 .ala { animation: aleteo .22s ease-in-out .15s 7 alternate, ala-reposo 7s ease-in-out 3s infinite; }
+.activo:not(.espera) .guac2 .ala { animation: aleteo .22s ease-in-out .55s 7 alternate, ala-reposo 7s ease-in-out 4.3s infinite; }
+.activo:not(.espera) .guac1 .cabeza { animation: mira 6.5s ease-in-out 2.4s infinite; }
+.activo:not(.espera) .guac2 .cabeza { animation: mira 7.5s ease-in-out 3.6s infinite; }
+@keyframes llega-izq {
+  0%   { opacity: 0; transform: translate(-70%, -90%) rotate(-14deg) scale(.92); }
+  12%  { opacity: 1; }
+  60%  { transform: translate(-14%, -22%) rotate(-8deg) scale(1.02); }
+  85%  { transform: translate(2%, 3%) rotate(2deg) scale(1); }
   100% { opacity: 1; transform: none; }
 }
-@keyframes vuelo-der {
-  0%   { opacity: 0; transform: translate(45%, -22%) rotate(10deg) scale(.9); }
-  25%  { opacity: 1; }
-  55%  { transform: translate(12%, 5%) rotate(4deg) scale(1.02); }
+@keyframes aleteo { from { transform: rotate(-52deg); } to { transform: rotate(6deg); } }
+/* en reposo, de vez en cuando el ala se acomoda */
+@keyframes ala-reposo { 0%, 86%, 100% { transform: none; } 90% { transform: rotate(-14deg); } 94% { transform: rotate(-4deg); } }
+/* la cabeza gira como mirando al invitado */
+@keyframes mira { 0%, 100% { transform: none; } 12% { transform: rotate(-9deg); } 28% { transform: rotate(-9deg); } 40% { transform: rotate(3deg); } 52% { transform: none; } }
+
+/* ---------- TUCÁN (portada): llega volando desde la derecha ---------- */
+.activo:not(.espera) .tucan { animation: llega-der 1.6s cubic-bezier(.3,.6,.25,1) .9s both; }
+.activo:not(.espera) .tucan .ala { animation: aleteo-tucan .2s ease-in-out .9s 8 alternate, ala-reposo 9s ease-in-out 5s infinite; }
+.activo:not(.espera) .tucan .cabeza { animation: mira-tucan 7s ease-in-out 3s infinite; }
+@keyframes llega-der {
+  0%   { opacity: 0; transform: translate(80%, -70%) rotate(12deg) scale(.9); }
+  12%  { opacity: 1; }
+  60%  { transform: translate(16%, -18%) rotate(6deg) scale(1.02); }
+  85%  { transform: translate(-2%, 3%) rotate(-2deg); }
   100% { opacity: 1; transform: none; }
 }
+@keyframes aleteo-tucan { from { transform: rotate(-30deg) translateY(-6%); } to { transform: rotate(4deg); } }
+@keyframes mira-tucan { 0%, 100% { transform: none; } 15% { transform: rotate(7deg); } 30% { transform: rotate(7deg); } 42% { transform: rotate(-4deg); } 55% { transform: none; } }
+
+/* ---------- OSO: asoma de entre las matas y mira al invitado ---------- */
+.activo:not(.espera) .oso { animation: asoma 1.9s cubic-bezier(.2,.7,.2,1) .6s both; }
+.activo:not(.espera) .oso .cuerpo { animation: respira 3.6s ease-in-out 2.6s infinite; transform-origin: 50% 100%; }
+.activo:not(.espera) .oso .cabeza { animation: oso-mira 8s ease-in-out 2.8s infinite; }
+@keyframes asoma {
+  0%   { transform: translateY(92%); }
+  55%  { transform: translateY(-4%); }
+  75%  { transform: translateY(2%); }
+  100% { transform: none; }
+}
+@keyframes respira { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.018) scaleX(1.006); } }
+@keyframes oso-mira {
+  0%, 100% { transform: none; }
+  10%  { transform: rotate(-7deg) translateY(-1.5%); }   /* levanta la cabeza hacia el invitado */
+  26%  { transform: rotate(-7deg) translateY(-1.5%); }
+  34%  { transform: rotate(-2deg); }
+  50%  { transform: rotate(5deg) translateY(1%); }       /* la ladea */
+  62%  { transform: none; }
+}
+
+/* ---------- JAGUAR: llega caminando desde la derecha y se recuesta ---------- */
+.activo:not(.espera) .jaguar { animation: camina 2.6s cubic-bezier(.35,.4,.3,1) .8s both; }
+.activo:not(.espera) .jaguar .cuerpo { animation: paso-cuerpo .42s ease-in-out .8s 5 alternate, se-recuesta .9s ease-out 2.9s both, respira 4.2s ease-in-out 4s infinite; transform-origin: 50% 100%; }
+.activo:not(.espera) .jaguar .pataa { animation: paso-a .42s ease-in-out .8s 5 alternate, patas-quietas .5s ease-out 2.9s both; }
+.activo:not(.espera) .jaguar .patab { animation: paso-b .42s ease-in-out .8s 5 alternate, patas-quietas .5s ease-out 2.9s both; }
+.activo:not(.espera) .jaguar .cabeza { animation: paso-cabeza .42s ease-in-out .8s 5 alternate, jaguar-mira 9s ease-in-out 4.5s infinite; }
+@keyframes camina {
+  0%   { transform: translateX(130%); }
+  80%  { transform: translateX(0%); }
+  100% { transform: none; }
+}
+@keyframes paso-cuerpo { from { transform: translateY(0) rotate(0); } to { transform: translateY(-2.2%) rotate(-1.2deg); } }
+@keyframes paso-a { from { transform: rotate(-9deg); } to { transform: rotate(7deg); } }
+@keyframes paso-b { from { transform: rotate(8deg); } to { transform: rotate(-8deg); } }
+@keyframes paso-cabeza { from { transform: translateY(0); } to { transform: translateY(-1.5%) rotate(-2deg); } }
+@keyframes se-recuesta { 0% { transform: translateY(-3%) scaleY(1.05); } 60% { transform: translateY(.5%) scaleY(.985); } 100% { transform: none; } }
+@keyframes patas-quietas { to { transform: none; } }
+@keyframes jaguar-mira {
+  0%, 100% { transform: none; }
+  12% { transform: rotate(-6deg) translateX(-1.5%); }    /* gira hacia el centro de la hoja */
+  30% { transform: rotate(-6deg) translateX(-1.5%); }
+  40% { transform: rotate(2deg); }
+  55% { transform: none; }
+}
+
+/* ---------- SALIDA de la portada: las aves se van volando, el oso se esconde, el jaguar se levanta ---------- */
+.saliendo .ave   { animation: se-va-volando .6s ease-in both !important; }
+.saliendo .ave .ala { animation: aleteo .16s ease-in-out 0s 4 alternate !important; }
+.saliendo .oso   { animation: se-esconde .55s ease-in both !important; }
+.saliendo .jaguar { animation: se-va-der .6s ease-in both !important; }
+@keyframes se-va-volando { to { opacity: 0; transform: translate(-30%, -120%) rotate(-10deg); } }
+@keyframes se-esconde { to { transform: translateY(92%); } }
+@keyframes se-va-der { to { transform: translateX(130%); } }
+/* al volver atrás a la portada (o al pasar a esta hoja), todo llega otra vez */
+
+/* ---------- CONFIRMACIÓN: colibrí y tucán llegan volando ---------- */
+.activo:not(.espera) .colibri { animation: llega-colibri 2.1s cubic-bezier(.3,.5,.3,1) .2s both; }
+.activo:not(.espera) .colibri .ala { animation: zumbido .09s linear .2s 22 alternate, ala-colibri 6s ease-in-out 3s infinite; }
+.activo:not(.espera) .colibri .cabeza { animation: mira-colibri 5.5s ease-in-out 2.6s infinite; }
+.activo:not(.espera) .colibri .cuerpo { animation: flota 3.2s ease-in-out 2.4s infinite; }
+@keyframes llega-colibri {
+  0%   { opacity: 0; transform: translate(-85%, 70%) rotate(8deg) scale(.9); }
+  10%  { opacity: 1; }
+  45%  { transform: translate(-22%, -16%) rotate(-4deg); }   /* sube, se queda un instante suspendido */
+  62%  { transform: translate(-10%, -12%) rotate(-2deg); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes zumbido { from { transform: rotate(-38deg) scaleY(.9); } to { transform: rotate(14deg); } }
+@keyframes ala-colibri { 0%, 80%, 100% { transform: none; } 84% { transform: rotate(-24deg); } 88% { transform: rotate(6deg); } 92% { transform: rotate(-18deg); } 96% { transform: none; } }
+@keyframes mira-colibri { 0%, 100% { transform: none; } 14% { transform: rotate(6deg); } 30% { transform: rotate(6deg); } 42% { transform: rotate(-5deg); } 56% { transform: none; } }
+@keyframes flota { 0%, 100% { transform: none; } 50% { transform: translateY(-1.2%); } }
+
+.activo:not(.espera) .tucan7 { animation: llega-der 1.7s cubic-bezier(.3,.6,.25,1) .7s both; }
+.activo:not(.espera) .tucan7 .cabeza { animation: mira-tucan 7.5s ease-in-out 3.2s infinite; }
+.activo:not(.espera) .tucan7 .cuerpo { animation: respira 4s ease-in-out 3s infinite; transform-origin: 50% 100%; }
+
 /* Estrella de la agenda: baja por la línea y vuelve a aparecer arriba */
 .estrella {
   position: absolute; left: 22.5%; top: 20.47%; width: 8.96%; height: auto; z-index: 3; pointer-events: none;
@@ -270,5 +369,5 @@ a, button { touch-action: manipulation; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
   .pieza { opacity: 1 !important; transform: scale(var(--z, 1)) !important; }
-  [data-anim] .base { -webkit-mask: none !important; mask: none !important; }
+  .ave, .oso, .jaguar { opacity: 1 !important; transform: none !important; }
 }
