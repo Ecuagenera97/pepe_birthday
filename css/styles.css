@@ -54,94 +54,152 @@ a, button { touch-action: manipulation; }
 }
 
 /* ============================================================
-   PORTADA: libro cerrado con sello (el video lo abre)
+   PORTADA: libro cerrado con sello. El video lo abre y deja ver
+   la primera hoja a través de la abertura (mezcla "multiply").
    ============================================================ */
 .escena { position: fixed; inset: 0; overflow: hidden; background: #0b130d; }
-.libro {
-  position: absolute; left: 50%; top: 50%; z-index: 10;
-  height: 100vh; height: 100svh; aspect-ratio: 9 / 16;
-  transform: translate(-50%, -50%);
-  background: #fbf5fd;
-  transition: opacity .55s ease-out, visibility 0s .55s;
+.libro, .apertura {
+  position: absolute; inset: 0; margin: auto;
+  height: 100vh; height: 100svh; width: calc(100vh * 9 / 16); width: calc(100svh * 9 / 16);
+  max-width: 100vw;
 }
-.libro.fuera { opacity: 0; visibility: hidden; pointer-events: none; }
-.libro .base, .libro .apertura {
-  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
-}
-.libro .apertura { opacity: 0; }
-.libro.reproduce .apertura { opacity: 1; }
-/* el cuerpo del libro llena toda la pantalla aunque sea más ancha que 9:16 */
-.libro::before { content: ""; position: absolute; inset: 0 -100vw; background: #0b130d; z-index: -1; }
+.libro { z-index: 10; background: #0b130d; transition: opacity .8s ease-in; }
+.libro .base { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .libro .sello { left: 35%; top: 40.5%; width: 30%; height: 17.5%; z-index: 3; }
-.libro.abriendo .sello { animation: none; box-shadow: none; opacity: 0; transition: opacity .15s; }
-
-.invitado {
-  position: absolute; left: 10%; right: 10%; top: 62.5%; z-index: 2;
-  text-align: center; color: var(--oro);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, .8);
-  transition: opacity .25s;
+.libro.abriendo { opacity: 0; pointer-events: none; }
+.libro.fuera { display: none; }
+.apertura {
+  z-index: 11; object-fit: cover; opacity: 0; pointer-events: none;
+  mix-blend-mode: multiply;               /* el blanco de la abertura deja ver la hoja */
 }
-.libro.abriendo .invitado { opacity: 0; }
-.libro.abriendo .toca { animation: none; opacity: 0; }
-.invitado .etiqueta {
-  display: block; font-size: clamp(11px, 3.3vw, 15px); letter-spacing: .38em;
-  text-transform: uppercase; color: var(--oro-claro); opacity: .9;
-}
-.invitado .nombre {
-  display: block; margin-top: .45em; font-weight: 600; line-height: 1.12;
-  font-size: clamp(22px, 7.2vw, 34px); letter-spacing: .05em; text-transform: uppercase;
-  overflow-wrap: anywhere;
-}
-.invitado .nombre .linea2 { display: block; font-size: .72em; font-weight: 500; margin-top: .15em; }
-.invitado .adorno { display: block; width: 46%; height: 1px; margin: .9em auto 0; background: linear-gradient(90deg, transparent, var(--oro), transparent); }
-.toca {
-  position: absolute; left: 0; right: 0; top: 34.5%; z-index: 2; text-align: center;
-  font-size: clamp(11px, 3.2vw, 14px); letter-spacing: .4em; text-transform: uppercase;
-  color: var(--oro); text-shadow: 0 2px 8px #000; animation: parpadeo 2s ease-in-out infinite;
-  transition: opacity .25s;
-}
-@keyframes parpadeo { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+.apertura.reproduce { opacity: 1; }
+.apertura.fin { opacity: 0; transition: opacity .35s; }
+.apertura.fuera { display: none; }
 
 /* ============================================================
-   PÁGINAS (se pasan de una en una)
+   LIBRETA: marco de cuero con filo dorado; las hojas se pasan
+   de una en una (la que sale se levanta y gira, la nueva aparece)
    ============================================================ */
 .stage {
-  --barra: 92px;
-  --A: min(calc(100vh - var(--barra)), calc(100vw * 16 / 9));
-  --A: min(calc(100svh - var(--barra)), calc(100vw * 16 / 9));
+  --marco: 10px;
+  --barra: 46px;
+  --A: min(calc(100vh - var(--barra) - 2 * var(--marco)), calc((100vw - 2 * var(--marco)) * 16 / 9));
+  --A: min(calc(100svh - var(--barra) - 2 * var(--marco)), calc((100vw - 2 * var(--marco)) * 16 / 9));
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: calc(var(--A) * 9 / 16); height: calc(var(--A) + var(--barra));
-  overflow: hidden; background: #0f1b13;
+  width: calc(var(--A) * 9 / 16 + 2 * var(--marco)); height: calc(var(--A) + var(--barra) + 2 * var(--marco));
+  overflow: hidden; border-radius: 14px;
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .08), transparent 60%),
+    repeating-radial-gradient(circle at 30% 40%, rgba(0, 0, 0, .06) 0 1px, transparent 1px 3px),
+    linear-gradient(160deg, #233a2a, #142319 55%, #0f1b13);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .6);
   touch-action: pan-y; user-select: none; -webkit-user-select: none;
 }
-@media (min-width: 560px) { .stage { border-radius: 14px; box-shadow: 0 14px 44px rgba(0, 0, 0, .6); } }
-.slides { position: absolute; inset: 0 0 var(--barra) 0; overflow: hidden; background: #17261b; }
-.slide { position: absolute; inset: 0; }
+/* filo dorado del marco */
+.stage::before {
+  content: ""; position: absolute; inset: 4px; border-radius: 11px; pointer-events: none; z-index: 7;
+  border: 1px solid rgba(216, 179, 106, .55);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .35);
+}
+.slides {
+  position: absolute; left: var(--marco); right: var(--marco); top: var(--marco); bottom: calc(var(--barra) + var(--marco));
+  overflow: hidden; border-radius: 8px; background: #e9e2cf; perspective: 1400px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .35), 0 6px 18px rgba(0, 0, 0, .45);
+}
 .slide {
-  --x: 0%;
-  opacity: 0; visibility: hidden; transform: translateX(var(--x));
-  transition: opacity .28s ease-out, transform .32s cubic-bezier(.22, .8, .25, 1), visibility 0s .32s;
+  position: absolute; inset: 0; transform-origin: left center;
+  opacity: 0; visibility: hidden; transform: none;
+  transition: opacity .55s ease, transform .6s cubic-bezier(.3, .7, .3, 1), visibility 0s .6s;
   will-change: opacity, transform;
 }
-.slide.activo { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
-.hoja { overflow: hidden; line-height: 0; background: #17261b; }
-.hoja img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
-.hoja .zona { z-index: 2; }
+.slide.activo { opacity: 1; visibility: visible; z-index: 2; transition-delay: 0s; }
+/* la hoja que sale (hacia adelante) se levanta por el borde derecho y gira */
+.slide.saliendo { z-index: 3; visibility: visible; opacity: 0; transform: rotateY(-78deg); transition-delay: 0s; }
+.slide.saliendo::after { opacity: 1; }
+/* la hoja que vuelve (hacia atrás) llega girando desde la izquierda */
+.slide.volviendo { z-index: 3; }
+.slide.preparada { transition: none; transform: rotateY(-78deg); opacity: 0; visibility: visible; }
+.slide::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 4;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, 0) 45%, rgba(255, 255, 255, .18) 90%);
+  transition: opacity .4s;
+}
+.hoja { overflow: hidden; line-height: 0; background: #ebe5d2; }
+.hoja .base, .hoja .pieza { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hoja .base { object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
+.hoja .zona { z-index: 5; }
 
-/* Página de la cuenta regresiva */
+/* Piezas: trozos de la misma imagen recortados con una máscara suave */
+.pieza {
+  pointer-events: none; z-index: 3;
+  background-size: 100% 100%; background-position: center; background-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  transform-origin: var(--ox) var(--oy);
+  will-change: transform, opacity;
+}
+.pieza.grande { transform: scale(var(--z, 1.12)); }
+.pieza.grande.late { animation: late 2.2s ease-in-out infinite; }
+@keyframes late {
+  0%, 100% { transform: scale(var(--z)); }
+  45%      { transform: scale(calc(var(--z) + .05)); }
+  60%      { transform: scale(calc(var(--z) - .01)); }
+}
+/* Animales de la portada: se levantan al llegar y al irse */
+[data-anim="animales"] .base { -webkit-mask: url(../img/m03_base.png) center / 100% 100% no-repeat; mask: url(../img/m03_base.png) center / 100% 100% no-repeat; }
+[data-anim="animales"].quieto .base, [data-anim="animales"].espera .base { -webkit-mask: none; mask: none; }
+[data-anim="animales"] .pieza { opacity: 0; transform: translateY(7%); }
+[data-anim="animales"].activo:not(.espera) .pieza { animation: sube .9s cubic-bezier(.2, .8, .25, 1) var(--d, 0s) both; }
+[data-anim="animales"].saliendo .pieza { animation: vuela-arriba .55s ease-in var(--d, 0s) both; }
+@keyframes sube { from { opacity: 0; transform: translateY(7%) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes vuela-arriba { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-12%) scale(1.04); } }
+/* Aves de la confirmación: llegan volando */
+[data-anim="aves"] .base { -webkit-mask: url(../img/m07_base.png) center / 100% 100% no-repeat; mask: url(../img/m07_base.png) center / 100% 100% no-repeat; }
+[data-anim="aves"].quieto .base { -webkit-mask: none; mask: none; }
+[data-anim="aves"] .pieza.vuela { opacity: 0; }
+[data-anim="aves"].activo .pieza.izq { animation: vuelo-izq 1.05s cubic-bezier(.25, .7, .3, 1) var(--d, 0s) both; }
+[data-anim="aves"].activo .pieza.der { animation: vuelo-der 1.05s cubic-bezier(.25, .7, .3, 1) var(--d, 0s) both; }
+@keyframes vuelo-izq {
+  0%   { opacity: 0; transform: translate(-45%, -18%) rotate(-10deg) scale(.9); }
+  25%  { opacity: 1; }
+  55%  { transform: translate(-12%, 6%) rotate(-4deg) scale(1.02); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes vuelo-der {
+  0%   { opacity: 0; transform: translate(45%, -22%) rotate(10deg) scale(.9); }
+  25%  { opacity: 1; }
+  55%  { transform: translate(12%, 5%) rotate(4deg) scale(1.02); }
+  100% { opacity: 1; transform: none; }
+}
+/* Estrella de la agenda: baja por la línea y vuelve a aparecer arriba */
+.estrella {
+  position: absolute; left: 22.5%; top: 20.47%; width: 8.96%; height: auto; z-index: 3; pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(255, 220, 140, .55));
+}
+.slide.activo .estrella { animation: estrella 7s ease-in-out .8s infinite; }
+@keyframes estrella {
+  0%     { opacity: 1; transform: none; }
+  70%    { opacity: 1; transform: translateY(640%) rotate(180deg); }
+  78%    { opacity: 0; transform: translateY(700%) rotate(200deg); }
+  78.1%  { opacity: 0; transform: translateY(-40%) rotate(0deg); }
+  88%    { opacity: 1; transform: none; }
+  100%   { opacity: 1; transform: none; }
+}
+
+/* Hoja de la cuenta regresiva */
 .slide-cuenta {
-  display: grid; place-items: center; line-height: normal;
+  display: grid; grid-auto-flow: row; align-content: center; justify-items: center; gap: 22px;
+  line-height: normal; padding: 0 16px;
   background:
     radial-gradient(90% 60% at 50% 38%, rgba(63, 98, 72, .55), transparent 70%),
     radial-gradient(120% 80% at 50% 100%, rgba(10, 20, 13, .9), transparent 70%),
     #14231a;
 }
 .slide-cuenta::before {
-  content: ""; position: absolute; inset: 14px; border: 1px solid rgba(216, 179, 106, .55);
-  border-radius: 10px; pointer-events: none;
+  content: ""; position: absolute; inset: 12px; border: 1px solid rgba(216, 179, 106, .55);
+  border-radius: 8px; pointer-events: none;
   box-shadow: inset 0 0 0 5px rgba(20, 35, 26, .9), inset 0 0 0 6px rgba(216, 179, 106, .3);
 }
-.slide-cuenta { grid-auto-flow: row; align-content: center; justify-items: center; gap: 22px; }
 .slide-cuenta .cuenta { z-index: 1; }
 .cuenta-tit { z-index: 1; margin: 0; text-align: center; color: var(--oro); font-weight: 600; letter-spacing: .06em; line-height: 1.05; font-size: clamp(34px, 11vw, 52px); text-shadow: 0 2px 12px rgba(0,0,0,.5); }
 .cuenta-tit small { display: block; margin-top: 8px; font-size: .34em; font-weight: 600; letter-spacing: .5em; text-indent: .5em; text-transform: uppercase; color: var(--oro-claro); }
@@ -178,50 +236,28 @@ a, button { touch-action: manipulation; }
 .btn-cal svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; }
 
 
-/* Indicador y botones de navegación */
+/* Puntos de página y pista para avanzar (sin texto) */
 .puntos {
-  position: absolute; bottom: 68px; left: 0; right: 0; z-index: 6;
+  position: absolute; left: 0; right: 0; bottom: calc(var(--marco) + 17px); z-index: 8;
   display: flex; justify-content: center; gap: 7px; height: 12px; align-items: center;
 }
 .puntos i {
   cursor: pointer; width: 6px; height: 6px; border-radius: 50%; background: rgba(243, 223, 168, .38);
-  transition: width .25s ease, background .25s ease;
+  transition: width .25s ease, background .25s ease; padding: 0;
 }
 .puntos i.on { width: 20px; border-radius: 4px; background: var(--oro-claro); }
-
-.mando {
-  position: absolute; left: 0; right: 0; bottom: 12px; z-index: 6;
-  display: flex; justify-content: center; align-items: center; gap: 10px; pointer-events: none;
+.pista {
+  position: absolute; right: calc(var(--marco) + 6px); bottom: calc(var(--marco) + 5px); z-index: 8;
+  width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+  color: var(--oro-claro); border: 1px solid rgba(216, 179, 106, .7); background: rgba(20, 35, 26, .6);
+  animation: anillo 2.4s ease-out infinite; transition: transform .07s, opacity .25s;
 }
-.mando button {
-  pointer-events: auto; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
-  color: var(--oro-claro); border: 1px solid #c4a35a;
-  background: linear-gradient(180deg, #34553e, #1b3223);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, .45), inset 0 0 0 3px rgba(20, 35, 26, .55), inset 0 0 0 4px rgba(216, 179, 106, .35);
-  transition: transform .07s ease-out, filter .1s, opacity .2s;
-  -webkit-tap-highlight-color: transparent;
-}
-.mando button:hover { filter: brightness(1.18); }
-.mando button:active { transform: scale(.93); transition-duration: .03s; }
-.mando button:focus-visible { outline: 3px solid var(--oro-claro); outline-offset: 3px; }
-.mando svg { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-.siguiente {
-  position: relative; overflow: hidden; gap: 8px; min-width: 152px; height: 46px; padding: 0 22px; border-radius: 999px;
-  font: 700 15px/1 var(--serif); letter-spacing: .26em; text-transform: uppercase; text-indent: .26em;
-  animation: latido 2.6s ease-in-out infinite;
-}
-.siguiente svg { width: 17px; height: 17px; animation: flecha 1.3s ease-in-out infinite; }
-.siguiente::after {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: linear-gradient(105deg, transparent 32%, rgba(255, 236, 178, .5) 50%, transparent 68%);
-  transform: translateX(-130%); animation: brillo 3.2s ease-in-out infinite;
-}
-.atras { width: 46px; height: 46px; border-radius: 50%; }
-.atras svg { width: 19px; height: 19px; }
-.atras[hidden], .siguiente[hidden] { display: none; }
-@keyframes latido { 0%, 100% { box-shadow: 0 6px 16px rgba(0,0,0,.45), 0 0 0 0 rgba(216,179,106,.5), inset 0 0 0 3px rgba(20,35,26,.55), inset 0 0 0 4px rgba(216,179,106,.35); }
-                    60% { box-shadow: 0 6px 16px rgba(0,0,0,.45), 0 0 0 11px rgba(216,179,106,0), inset 0 0 0 3px rgba(20,35,26,.55), inset 0 0 0 4px rgba(216,179,106,.35); } }
-@keyframes flecha { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+.pista.atras { right: auto; left: calc(var(--marco) + 6px); animation: none; opacity: .75; }
+.pista[hidden] { display: none; }
+.pista svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.pista:not(.atras) svg { animation: flecha 1.3s ease-in-out infinite; }
+.pista:active { transform: scale(.9); }
+@keyframes flecha { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
 
 /* Música */
 .musica {
@@ -234,4 +270,6 @@ a, button { touch-action: manipulation; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+  .pieza { opacity: 1 !important; transform: scale(var(--z, 1)) !important; }
+  [data-anim] .base { -webkit-mask: none !important; mask: none !important; }
 }

@@ -21,6 +21,7 @@
   <link rel="icon" href="img/favicon.png" type="image/png">
   <link rel="preload" as="image" href="img/00_portada.webp" fetchpriority="high">
   <link rel="preload" as="image" href="img/03_portada.webp">
+  <link rel="preload" as="video" href="video/apertura.mp4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -33,104 +34,114 @@
     <div class="stage" id="stage">
       <div class="slides" id="slides">
 
-    <section class="hoja slide" aria-label="Invitación">
-          <img src="img/03_portada.webp" width="1080" height="1920"
-               alt="Pepe Portilla. Usted está cordialmente invitado a celebrar 60 años.">
-        </section>
+    <!-- 1. Portada: los animales se levantan al entrar y al salir -->
+    <section class="hoja slide" data-anim="animales" aria-label="Invitación">
+      <img class="base" src="img/03_portada.webp" width="1440" height="2560"
+           alt="Pepe Portilla. Usted está cordialmente invitado a celebrar 60 años.">
+      <div class="pieza" style="background-image:url(img/03_portada.webp);-webkit-mask-image:url(img/m03_guac.png);mask-image:url(img/m03_guac.png);--ox:13%;--oy:22%;--d:.05s"></div>
+      <div class="pieza" style="background-image:url(img/03_portada.webp);-webkit-mask-image:url(img/m03_tucan.png);mask-image:url(img/m03_tucan.png);--ox:89%;--oy:27%;--d:.2s"></div>
+      <div class="pieza" style="background-image:url(img/03_portada.webp);-webkit-mask-image:url(img/m03_oso.png);mask-image:url(img/m03_oso.png);--ox:12%;--oy:79%;--d:.35s"></div>
+      <div class="pieza" style="background-image:url(img/03_portada.webp);-webkit-mask-image:url(img/m03_jaguar.png);mask-image:url(img/m03_jaguar.png);--ox:87%;--oy:80%;--d:.5s"></div>
+    </section>
 
-    <section class="slide slide-cuenta">
+    <!-- 2. Cuenta regresiva -->
+    <section class="slide slide-cuenta" aria-label="Cuenta regresiva">
     <p class="cuenta-tit">Pepe Portilla<small>60 años</small></p>
-    <div class="cuenta" aria-label="Cuenta regresiva">
-          <p class="titulo">Faltan</p>
-          <p class="para" id="para" hidden>Invitación para <strong id="para-nombre"></strong></p>
-          <div class="reloj" id="reloj" role="timer" aria-live="off">
-            <div class="u"><span class="n" data-u="d">00</span><span class="l">Días</span></div>
-            <div class="u"><span class="n" data-u="h">00</span><span class="l">Horas</span></div>
-            <div class="u"><span class="n" data-u="m">00</span><span class="l">Min.</span></div>
-            <div class="u"><span class="n" data-u="s">00</span><span class="l">Seg.</span></div>
-          </div>
-          <div class="calendario" id="calendario">
-            <a class="btn-cal" id="cal-google" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Google Calendar</a>
-            <button class="btn-cal" id="cal-ics" type="button">
-              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>iPhone / Outlook</button>
-          </div>
-        </div>
+    <div class="cuenta">
+      <p class="titulo">Faltan</p>
+      <p class="para" id="para" hidden>Invitación para <strong id="para-nombre"></strong></p>
+      <div class="reloj" id="reloj" role="timer" aria-live="off">
+        <div class="u"><span class="n" data-u="d">00</span><span class="l">Días</span></div>
+        <div class="u"><span class="n" data-u="h">00</span><span class="l">Horas</span></div>
+        <div class="u"><span class="n" data-u="m">00</span><span class="l">Min.</span></div>
+        <div class="u"><span class="n" data-u="s">00</span><span class="l">Seg.</span></div>
+      </div>
+      <div class="calendario" id="calendario">
+        <a class="btn-cal" id="cal-google" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Google Calendar</a>
+        <button class="btn-cal" id="cal-ics" type="button">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>iPhone / Outlook</button>
+      </div>
+    </div>
     <p class="cuenta-pie">Te esperamos</p></section>
 
+    <!-- 3. Fecha y lugar: botón Ubicación más grande y latiendo -->
     <section class="hoja slide" aria-label="Fecha y lugar">
-          <img src="img/04_fecha_lugar.webp" width="1080" height="1920" decoding="async"
-               alt="Sábado 9 de enero, 4pm. El evento tendrá lugar en Uzhupud Garden, Paute - Ecuador.">
-          <a class="zona" data-accion="mapa" target="_blank" rel="noopener" aria-label="Ver ubicación en el mapa"
-             style="left:33.5%;top:74.5%;width:31.7%;height:3.3%"></a>
-        </section>
+      <img class="base" src="img/04_fecha_lugar.webp" width="1440" height="2560" decoding="async"
+           alt="Sábado 9 de enero, 4pm. El evento tendrá lugar en Uzhupud Garden, Paute - Ecuador.">
+      <div class="pieza grande late" style="background-image:url(img/04_fecha_lugar.webp);-webkit-mask-image:url(img/m04_ubicacion.png);mask-image:url(img/m04_ubicacion.png);--ox:50%;--oy:76.4%;--z:1.18"></div>
+      <a class="zona" data-accion="mapa" target="_blank" rel="noopener" aria-label="Ver ubicación en el mapa"
+         style="left:31%;top:73.8%;width:38%;height:5%"></a>
+    </section>
 
+    <!-- 4. Agenda: íconos más grandes y estrella que recorre la línea -->
     <section class="hoja slide" aria-label="Agenda de la noche">
-          <img src="img/05_agenda.webp" width="1080" height="1920" decoding="async"
-               alt="Agenda de la noche: ceremonia en la Capilla San José 16h00, cóctel 17h00 a 18h45, cena de recepción 19h00 a 20h00, fiesta de celebración 20h30.">
-        </section>
+      <img class="base" src="img/05_agenda.webp" width="1440" height="2560" decoding="async"
+           alt="Agenda de la noche: ceremonia en la Capilla San José 16h00, cóctel 17h00 a 18h45, cena de recepción 19h00 a 20h00, fiesta de celebración 20h30.">
+      <div class="pieza grande" style="background-image:url(img/05_agenda.webp);-webkit-mask-image:url(img/m05_capilla.png);mask-image:url(img/m05_capilla.png);--ox:49%;--oy:26.3%;--z:1.1"></div>
+      <div class="pieza grande" style="background-image:url(img/05_agenda.webp);-webkit-mask-image:url(img/m05_coctel.png);mask-image:url(img/m05_coctel.png);--ox:48%;--oy:47.5%;--z:1.1"></div>
+      <div class="pieza grande" style="background-image:url(img/05_agenda.webp);-webkit-mask-image:url(img/m05_cena.png);mask-image:url(img/m05_cena.png);--ox:49%;--oy:65.8%;--z:1.1"></div>
+      <div class="pieza grande" style="background-image:url(img/05_agenda.webp);-webkit-mask-image:url(img/m05_fiesta.png);mask-image:url(img/m05_fiesta.png);--ox:51%;--oy:82.6%;--z:1.1"></div>
+      <img class="estrella" src="img/p05_estrella.png" alt="" width="129" height="218">
+    </section>
 
+    <!-- 5. Código de vestimenta -->
     <section class="hoja slide" aria-label="Código de vestimenta">
-          <img src="img/06_vestimenta.webp" width="1080" height="1920" decoding="async"
-               alt="Código de vestimenta: traje formal. Verdes y sus tonalidades. Reservados para el cumpleañero.">
-        </section>
+      <img class="base" src="img/06_vestimenta.webp" width="1440" height="2560" decoding="async"
+           alt="Código de vestimenta: traje formal. Verdes y sus tonalidades. Reservados para el cumpleañero.">
+    </section>
 
-    <section class="hoja slide" aria-label="Confirmación de asistencia">
-          <img src="img/07_confirmacion.webp" width="1080" height="1920" decoding="async"
-               alt="Agradecemos su confirmación hasta el 27 de diciembre del 2026.">
-          <a class="zona" data-accion="confirmar" target="_blank" rel="noopener" aria-label="Confirmar asistencia por WhatsApp"
-             style="left:9.5%;top:65%;width:43%;height:5%"></a>
-        </section>
+    <!-- 6. Confirmación: colibrí y tucán llegan volando; botón Asistencia más grande y latiendo -->
+    <section class="hoja slide" data-anim="aves" aria-label="Confirmación de asistencia">
+      <img class="base" src="img/07_confirmacion.webp" width="1440" height="2560" decoding="async"
+           alt="Agradecemos su confirmación hasta el 27 de diciembre del 2026.">
+      <div class="pieza vuela izq" style="background-image:url(img/07_confirmacion.webp);-webkit-mask-image:url(img/m07_colibri.png);mask-image:url(img/m07_colibri.png);--ox:14%;--oy:14%"></div>
+      <div class="pieza vuela der" style="background-image:url(img/07_confirmacion.webp);-webkit-mask-image:url(img/m07_tucan.png);mask-image:url(img/m07_tucan.png);--ox:86%;--oy:63%;--d:.15s"></div>
+      <div class="pieza grande late" style="background-image:url(img/07_confirmacion.webp);-webkit-mask-image:url(img/m07_asistencia.png);mask-image:url(img/m07_asistencia.png);--ox:30%;--oy:67%;--z:1.15"></div>
+      <a class="zona" data-accion="confirmar" target="_blank" rel="noopener" aria-label="Confirmar asistencia por WhatsApp"
+         style="left:5.5%;top:63.8%;width:49%;height:6.4%"></a>
+    </section>
 
+    <!-- 7. Hospedaje: "Hotel Uzhupud Garden" y botón Reserva más grandes -->
     <section class="hoja slide" aria-label="Hospedaje con tarifa especial">
-          <img src="img/08_hospedaje.webp" width="1080" height="1920" decoding="async"
-               alt="Hospedaje, tarifa especial disponible para nuestros amigos. Hotel Uzhupud Garden.">
-          <a class="zona" data-accion="hospedaje" target="_blank" rel="noopener" aria-label="Reservar hospedaje por WhatsApp"
-             style="left:50.5%;top:61.2%;width:39%;height:4.6%"></a>
-        </section>
+      <img class="base" src="img/08_hospedaje.webp" width="1440" height="2560" decoding="async"
+           alt="Hospedaje, tarifa especial disponible para nuestros amigos. Hotel Uzhupud Garden.">
+      <div class="pieza grande" style="background-image:url(img/08_hospedaje.webp);-webkit-mask-image:url(img/m08_hotel.png);mask-image:url(img/m08_hotel.png);--ox:69%;--oy:58%;--z:1.13"></div>
+      <a class="zona" data-accion="hospedaje" target="_blank" rel="noopener" aria-label="Reservar hospedaje por WhatsApp"
+         style="left:47.5%;top:60.3%;width:43.5%;height:6%"></a>
+    </section>
 
+    <!-- 8. Obsequio: placa más grande -->
     <section class="hoja slide" aria-label="Obsequio">
-          <img src="img/09_obsequio.webp" width="1080" height="1920" decoding="async"
-               alt="Obsequio. Su obsequio en sobre cerrado o transferencia será donado para la Fundación Santa María de la Esperanza. Te esperamos.">
-          <a class="zona suave" data-accion="obsequio" target="_blank" rel="noopener" aria-label="Fundación Santa María de la Esperanza"
-             style="left:34.4%;top:56.1%;width:31.3%;height:5.3%"></a>
-        </section>
+      <img class="base" src="img/09_obsequio.webp" width="1440" height="2560" decoding="async"
+           alt="Obsequio. Su obsequio en sobre cerrado o transferencia será donado para la Fundación Santa María de la Esperanza. Te esperamos.">
+      <div class="pieza grande" style="background-image:url(img/09_obsequio.webp);-webkit-mask-image:url(img/m09_placa.png);mask-image:url(img/m09_placa.png);--ox:50%;--oy:50.5%;--z:1.1"></div>
+      <a class="zona suave" data-accion="obsequio" target="_blank" rel="noopener" aria-label="Fundación Santa María de la Esperanza"
+         style="left:32%;top:55%;width:36%;height:7%"></a>
+    </section>
 
       </div>
 
-      <!-- Indicador de página (arriba) -->
-      <div class="puntos" id="puntos" aria-hidden="true"></div>
-
-      <!-- Controles (abajo) -->
-      <nav class="mando" aria-label="Navegación">
-        <button class="atras" id="atras" type="button" aria-label="Página anterior">
-          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
-        </button>
-        <button class="siguiente" id="siguiente" type="button">
-          <span id="sig-texto">Siguiente</span>
-          <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-        </button>
-      </nav>
+      <!-- Indicador de página + pista para avanzar (sin texto) -->
+      <div class="puntos" id="puntos" aria-label="Páginas" role="tablist"></div>
+      <button class="pista" id="pista" type="button" aria-label="Página siguiente">
+        <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+      <button class="pista atras" id="pista-atras" type="button" aria-label="Página anterior" hidden>
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
     </div>
 
     <!-- ===== Portada: libro cerrado; al tocar el sello se abre (video) ===== -->
     <div class="libro" id="libro">
-      <img class="base" src="img/00_portada.webp" alt="Invitación cerrada con sello: Pepe Portilla, 60 años" width="720" height="1280" fetchpriority="high">
-      <video class="apertura" id="apertura" muted playsinline webkit-playsinline preload="auto" tabindex="-1" aria-hidden="true">
-        <source src="video/apertura.mp4" type="video/mp4">
-      </video>
-
-      <!-- Nombre del invitado (desde ?nombre=...) -->
-      <div class="invitado" id="invitado">
-        <span class="etiqueta" id="etiqueta">Estás invitado</span>
-        <span class="nombre" id="nombre">Te esperamos</span>
-        <span class="adorno"></span>
-      </div>
-      <div class="toca">Toca el sello</div>
-
+      <img class="base" src="img/00_portada.webp" alt="Invitación cerrada con sello: Pepe Portilla, 60 años" width="1080" height="1920" fetchpriority="high">
       <!-- Zona clicable sobre el sello -->
       <button class="zona redonda sello" id="sello" type="button" aria-label="Abrir la invitación"></button>
     </div>
+    <!-- El video va fuera del libro para poder fundirse con la hoja que está debajo -->
+    <video class="apertura" id="apertura" muted playsinline webkit-playsinline preload="auto" tabindex="-1" aria-hidden="true">
+      <source src="video/apertura.mp4" type="video/mp4">
+    </video>
   </main>
 
   <button class="musica" id="musica" type="button" hidden aria-label="Reproducir música">

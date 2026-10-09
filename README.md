@@ -2,7 +2,7 @@
 
 Sitio web estático (sin servidor, sin Claude): se publica con GitHub Pages.
 
-- `index.html?nombre=Sr.+Juan+Pérez+y+Sra` → portada del libro con el sello "PP". Al tocarlo, un video abre el libro y se pasa a las páginas **una por una** con el botón **Siguiente** (o deslizando el dedo / flechas del teclado): portada, cuenta regresiva, fecha y lugar, agenda, vestimenta, confirmación, hospedaje y obsequio.
+- `index.html?nombre=Sr.+Juan+Pérez+y+Sra` → portada del libro con el sello "PP". Al tocarlo, un video abre el libro y deja ver la primera hoja. Las hojas se pasan **una por una** como en una libreta: deslizando el dedo, tocando el borde derecho de la hoja (o el izquierdo para volver), con la flecha pequeña de abajo o con los puntos: portada, cuenta regresiva, fecha y lugar, agenda, vestimenta, confirmación, hospedaje y obsequio.
 - `details.html` → solo redirige a `index.html` (por si algún link viejo lo usa).
 - `generador.html` → crea el link de cada invitado y lo envía por WhatsApp.
 
@@ -13,7 +13,8 @@ Sitio web estático (sin servidor, sin Claude): se publica con GitHub Pages.
 | **`config.js`** | Fecha y hora del evento, link del mapa, teléfonos y mensajes de WhatsApp, link de la fundación, música | Casi siempre aquí |
 | `video/apertura.mp4` | Video corto que abre el libro al tocar el sello | Solo si cambia el diseño de la portada |
 | `img/00_portada.webp` | Primer cuadro del video (la portada cerrada). Debe verse igual que el inicio del video | Junto con el video |
-| `img/03_…09_*.webp` | Las 7 páginas de la invitación (arte del diseñador) | Solo si cambia el diseño (fechas, horas, agenda…) |
+| `img/03_…09_*.webp` | Las 7 páginas de la invitación en HD (1440×2560, del PDF del diseñador) | Solo si cambia el diseño (fechas, horas, agenda…) |
+| `img/m*.png`, `img/p05_estrella.png` | Máscaras y recortes para las animaciones (animales, aves, botones más grandes, estrella) | No. Si se cambia una página, avisar: las máscaras dependen de la posición de cada elemento |
 | `img/01_…, 02_…` | Imágenes de la portada anterior (ya no se usan) | Se pueden borrar |
 | `img/compartir.jpg` | Imagen que sale al compartir el link en WhatsApp (1200×630) | Si cambia el diseño |
 | `index.html` | Portada + todas las páginas y la posición de los botones (`style="left:…;top:…"`). Líneas "og:" = vista previa de WhatsApp | Solo para mover un botón o cambiar el título/dirección |
@@ -35,7 +36,7 @@ Sitio web estático (sin servidor, sin Claude): se publica con GitHub Pages.
 - **Link de ubicación:** `config.js` → `mapa`.
 - **Link de la fundación:** `config.js` → `obsequio`.
 - **Fecha/hora del contador y del calendario:** `config.js` → `evento.inicio` (formato `2027-01-09T16:00:00-05:00`).
-- **Textos dentro de las páginas** (agenda, "Hasta el 27 de Diciembre", etc.): están dibujados en las imágenes. Hay que exportar la página nueva desde el diseño como WebP/JPG de 1080×1920, con el mismo nombre, y subirla a `img/` (en GitHub: **Add file → Upload files**, mismo nombre = reemplaza).
+- **Textos dentro de las páginas** (agenda, "Hasta el 27 de Diciembre", etc.): están dibujados en las imágenes. Hay que exportar la página nueva desde el diseño como WebP/JPG de 1440×2560, con el mismo nombre, y subirla a `img/` (en GitHub: **Add file → Upload files**, mismo nombre = reemplaza).
 
 ## Cambiar la vista previa de WhatsApp
 
