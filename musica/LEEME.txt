@@ -1,0 +1,1 @@
+Coloca aquí tu .mp3 y escribe su nombre en config.js (musica: "musica/cancion.mp3")

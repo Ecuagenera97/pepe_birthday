@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a13">
+  <title>Pepe Portilla · 60 años – ¡Te esperamos!</title>
+
+  <!-- Vista previa al compartir por WhatsApp (WhatsApp no ejecuta JavaScript,
+       por eso se escribe aquí a mano). -->
+  <meta name="description" content="Detalles del evento, ubicación y confirmación de asistencia.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pepe Portilla · 60 años – ¡Te esperamos!">
+  <meta property="og:description" content="Detalles del evento, ubicación y confirmación de asistencia.">
+  <meta property="og:url" content="https://ecuagenera97.github.io/pepe_birthday/">
+  <meta property="og:image" content="https://ecuagenera97.github.io/pepe_birthday/img/compartir.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="img/favicon.png" type="image/png">
+  <link rel="preload" as="image" href="img/01_libro_cerrado.webp" fetchpriority="high">
+  <link rel="prefetch" href="details.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="escena">
+    <div class="libro" id="libro">
+
+      <!-- Libro cerrado -->
+      <div class="capa cerrado">
+        <img src="img/01_libro_cerrado.webp" alt="Invitación cerrada con sello de lacre: Pepe Portilla, 60 años" width="1080" height="1920" fetchpriority="high">
+      </div>
+      <!-- Libro abierto (aparece al tocar el sello) -->
+      <div class="capa interior" aria-hidden="true">
+        <img src="img/02_libro_abierto.webp" alt="" width="1080" height="1920" decoding="async">
+      </div>
+
+      <!-- Nombre del invitado (desde ?nombre=...) -->
+      <div class="invitado" id="invitado">
+        <span class="etiqueta" id="etiqueta">Estás invitado</span>
+        <span class="nombre" id="nombre">Te esperamos</span>
+        <span class="adorno"></span>
+      </div>
+      <div class="toca">Toca el sello</div>
+
+      <!-- Zona clicable sobre el sello -->
+      <button class="zona redonda sello" id="sello" type="button" aria-label="Abrir la invitación"></button>
+    </div>
+  </main>
+
+  <noscript><p style="text-align:center;padding:24px"><a style="color:#d8b36a" href="details.html">Ver la invitación</a></p></noscript>
+
+  <script src="config.js"></script>
+  <script src="js/comun.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>
