@@ -253,9 +253,8 @@
     selva: [
       { malla: "guac1", mover: guacamayo({ retardo: .2, semilla: 0.4 }) },
       { malla: "guac2", mover: guacamayo({ retardo: .7, semilla: 1.9 }) },
-      { malla: "tucan", mover: tucanPosado({ retardo: .5, semilla: 2.7, dir: 1 }) },
-      { malla: "oso", mover: oso },
-      { malla: "jaguar", mover: jaguar }
+      { malla: "tucan", mover: tucanPosado({ retardo: .5, semilla: 2.7, dir: 1 }) }
+      /* el oso y el jaguar caminan con cuadros de animación: js/videoanimales.js */
     ],
     aves: [
       { malla: "colibri", mover: colibri },
@@ -293,12 +292,14 @@
   /* API usada por index.js */
   window.ANIMALES = {
     entrar: function (hoja) {
+      if (window.CAMINAN) CAMINAN.entrar(hoja);
       var c = hoja.querySelector("canvas.selva"); if (!c || !c._escena || !c._escena.gl) return;
       var e = c._escena; e.ajustar(); e.activa = true; e.t0 = performance.now();
       e.animales.forEach(function (a) { a.fase = reducido ? "reposo" : "entra"; a.tFase = 0; });
       arrancar();
     },
     salir: function (hoja) {
+      if (window.CAMINAN) CAMINAN.salir(hoja);
       var c = hoja.querySelector("canvas.selva"); if (!c || !c._escena || !c._escena.gl) return;
       var e = c._escena;
       setTimeout(function () { e.activa = false; e.animales.forEach(function (a) { a.fase = "fuera"; }); }, 700);

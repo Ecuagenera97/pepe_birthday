@@ -149,6 +149,7 @@ a, button { touch-action: manipulation; }
    ============================================================ */
 canvas.selva { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
 canvas.selva.sin-webgl { display: none; }
+canvas.caminan { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
 .frente { position: absolute; z-index: 4; height: auto; pointer-events: none; }
 
 /* Estrella de la agenda: baja por la línea y vuelve a aparecer arriba */

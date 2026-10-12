@@ -15,6 +15,7 @@ Sitio web estático (sin servidor, sin Claude): se publica con GitHub Pages.
 | `img/00_portada.webp` | Primer cuadro del video (la portada cerrada). Debe verse igual que el inicio del video | Junto con el video |
 | `img/03_…09_*.webp` | Las 7 páginas de la invitación en HD (1440×2560, del PDF del diseñador) | Solo si cambia el diseño (fechas, horas, agenda…) |
 | `img/anim/`, `js/mallas.js`, `js/animales.js` | Los animales (extraídos del PDF del diseñador) y su animación: cada uno es una figura montada en una malla con "huesos" (cuello, alas, patas) que se dobla suavemente. Las páginas `03_portada` y `07_confirmacion` llevan el fondo sin los animales | No. Si cambia el diseño de esas páginas, avisar: hay que volver a separar las figuras |
+| `img/anim/mov/`, `js/movimiento.js`, `js/videoanimales.js` | El oso y el jaguar que caminan: cuadros de animación (sacados de un video y recortados) en hojas de 10 cuadros. En `movimiento.js` se ajusta la velocidad (`fps`), el retraso de entrada (`retardo`) y la posición final (`pagina`) | Solo para ajustar tiempos o posición |
 | `img/m*.png`, `img/p05_estrella.png` | Máscaras para los botones agrandados y la estrella de la agenda | No. Si se cambia una página, avisar: dependen de la posición de cada elemento |
 | `img/01_…, 02_…` | Imágenes de la portada anterior (ya no se usan) | Se pueden borrar |
 | `img/compartir.jpg` | Imagen que sale al compartir el link en WhatsApp (1200×630) | Si cambia el diseño |
