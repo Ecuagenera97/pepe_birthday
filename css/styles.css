@@ -1,255 +1,209 @@
 /* ============================================================
-   Invitación Pepe Portilla · 60 años
+   Invitación Pepe Portilla · 60 años — libro de la selva
    ============================================================ */
 :root {
-  --fondo: #0b130d;
+  --fondo: #0d1610;
   --verde: #1d3524;
-  --verde-claro: #2f4d38;
-  --oro: #d8b36a;
-  --oro-claro: #f3dfa8;
-  --papel: #ece5d2;
-  --tinta: #24402c;
+  --oro: #d4b06a;
+  --oro-claro: #f1dfae;
+  --crema: #f3ead3;
   --serif: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+  --barra: 56px;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; background: var(--fondo); }
+html, body { margin: 0; padding: 0; height: 100%; background: var(--fondo); }
 body {
-  font-family: var(--serif);
-  color: var(--oro-claro);
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
-  overscroll-behavior-y: none;
+  font-family: var(--serif); color: var(--oro-claro); overflow: hidden;
+  -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+  background:
+    radial-gradient(120% 80% at 50% 0%, #1b2a1f 0%, transparent 60%),
+    radial-gradient(100% 60% at 50% 100%, #142019 0%, transparent 70%),
+    var(--fondo);
 }
-img { display: block; width: 100%; height: auto; }
+img { display: block; max-width: none; }
 a, button { touch-action: manipulation; }
 
-/* ---------- Botón invisible sobre la imagen (zona clicable) ---------- */
+/* ---------- Escena: el libro centrado, barra de navegación abajo ---------- */
+.escena { position: fixed; inset: 0; }
+.libro {
+  position: absolute; left: 50%; top: calc(50% - var(--barra) / 2);
+  transform: translate(-50%, -50%);
+  /* tamaño lo fija app.js: 9:16 que cabe en la pantalla */
+  width: var(--lw, 360px); height: var(--lh, 640px);
+  perspective: 2200px;
+}
+.flip { width: 100%; height: 100%; }
+.pagina { position: relative; overflow: hidden; background: #ece3cc; }
+.pagina .base { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; user-select: none; }
+/* lomo: sombra suave a la izquierda de cada hoja (libro abierto) */
+.pagina::after {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: 7%; pointer-events: none; z-index: 6;
+  background: linear-gradient(90deg, rgba(40, 28, 10, .28), rgba(40, 28, 10, 0));
+}
+.pagina.logo::after { background: linear-gradient(90deg, rgba(0, 0, 0, .45), rgba(0, 0, 0, 0)); }
+
+/* ---------- 1. Tapa ---------- */
+.tapa {
+  position: absolute; inset: 0; z-index: 20; transform-origin: left center; transform-style: preserve-3d;
+  transition: transform 1.6s cubic-bezier(.45, .05, .2, 1), filter 1.6s;
+}
+.tapa-cara { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 2px 6px 6px 2px; overflow: hidden; }
+.tapa-cara.frente { box-shadow: 0 18px 50px rgba(0, 0, 0, .55), inset -2px 0 0 rgba(255, 255, 255, .05); }
+.tapa-cara.frente img { width: 100%; height: 100%; object-fit: cover; }
+.tapa-cara.dorso {
+  transform: rotateY(180deg);
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, 0) 12%),
+    repeating-linear-gradient(115deg, rgba(212, 176, 106, .05) 0 2px, transparent 2px 9px),
+    #1a2b1f;
+  box-shadow: inset 0 0 0 10px #142219, inset 0 0 0 11px rgba(212, 176, 106, .35);
+}
+.libro.abriendo .tapa { transform: rotateY(-178deg); }
+.libro.abierto .tapa { display: none; }
+.libro .sello { left: 64%; top: 41%; width: 27%; height: 16%; z-index: 3; }
+.libro.abriendo .sello { opacity: 0; animation: none; transition: opacity .2s; }
+
+/* ---------- Zonas clicables (botones del diseño) ---------- */
 .zona {
-  position: absolute; display: block; padding: 0; margin: 0; border: 0;
-  background: transparent; cursor: pointer; text-decoration: none;
-  overflow: hidden; border-radius: 12px;
-  transition: transform .09s ease-out, box-shadow .09s ease-out;
-  animation: anillo 2.4s ease-out infinite;
+  position: absolute; display: block; z-index: 8; border-radius: 999px; cursor: pointer;
+  background: transparent; border: 0; padding: 0; text-decoration: none;
 }
-.zona.redonda { border-radius: 50%; }
-.zona.suave { border-radius: 7px; }
-/* destello dorado que cruza el botón */
-.zona::after {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: linear-gradient(105deg, transparent 32%, rgba(255, 236, 178, .55) 50%, transparent 68%);
-  transform: translateX(-130%);
-  animation: brillo 3.4s ease-in-out infinite;
-}
-.zona:hover { box-shadow: 0 0 0 3px rgba(243, 223, 168, .65), 0 0 22px rgba(243, 223, 168, .55); }
-.zona:active { transform: scale(.955); transition-duration: .04s; }
+.zona.redonda { border-radius: 50%; animation: anillo 2.2s ease-out infinite; }
+.zona.suave { border-radius: 10px; }
 .zona:focus-visible { outline: 3px solid var(--oro-claro); outline-offset: 3px; }
 @keyframes anillo {
-  0%   { box-shadow: 0 0 0 0 rgba(216, 179, 106, .55); }
-  70%  { box-shadow: 0 0 0 14px rgba(216, 179, 106, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(216, 179, 106, 0); }
+  0%   { box-shadow: 0 0 0 0 rgba(241, 223, 174, .7); }
+  70%  { box-shadow: 0 0 0 18px rgba(241, 223, 174, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(241, 223, 174, 0); }
 }
-@keyframes brillo {
-  0%, 55% { transform: translateX(-130%); }
-  100%    { transform: translateX(130%); }
+/* El botón dibujado "late": una copia nítida del mismo trozo de la hoja que crece y vuelve */
+.late {
+  position: absolute; z-index: 7; pointer-events: none; border-radius: 999px;
+  left: calc(var(--l) * 1%); top: calc(var(--t) * 1%); width: calc(var(--w) * 1%); height: calc(var(--h) * 1%);
+  background-size: calc(10000% / var(--w)) calc(10000% / var(--h));
+  background-position: calc(var(--l) / (100 - var(--w)) * 100%) calc(var(--t) / (100 - var(--h)) * 100%);
+  background-repeat: no-repeat;
+  animation: late 2.2s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(212, 176, 106, .55);
 }
+.late.suave { border-radius: 8px; }
+@keyframes late {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 176, 106, .5); }
+  40%      { transform: scale(1.07); box-shadow: 0 4px 14px rgba(0, 0, 0, .25), 0 0 0 6px rgba(212, 176, 106, 0); }
+  55%      { transform: scale(1.03); }
+}
+.late::after {          /* destello que cruza el botón */
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 240, 200, .5) 50%, transparent 65%);
+  background-size: 250% 100%; animation: brillo 3.4s ease-in-out infinite;
+}
+@keyframes brillo { 0%, 55% { background-position: 130% 0; } 100% { background-position: -30% 0; } }
 
-/* ============================================================
-   PORTADA: libro cerrado con sello. El video lo abre y deja ver
-   la primera hoja a través de la abertura (mezcla "multiply").
-   ============================================================ */
-.escena { position: fixed; inset: 0; overflow: hidden; background: #0b130d; }
-.libro, .apertura {
-  position: absolute; inset: 0; margin: auto;
-  height: 100vh; height: 100svh; width: calc(100vh * 9 / 16); width: calc(100svh * 9 / 16);
-  max-width: 100vw;
+/* ---------- 2. Logo ---------- */
+.logo-caja { position: absolute; left: 25.28%; top: 27.11%; width: 50.35%; height: 32.93%; z-index: 3; }
+.logo-img { width: 100%; height: 100%; opacity: 0; transform: scale(.94); filter: blur(6px) brightness(.7); }
+.logo-brillo {
+  position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: 0;
+  -webkit-mask: url(../img/p02_logo_brillo.png) center / 100% 100% no-repeat; mask: url(../img/p02_logo_brillo.png) center / 100% 100% no-repeat;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 243, 205, .95) 50%, transparent 62%);
+  background-size: 300% 100%; background-position: 120% 0;
 }
-.libro { z-index: 10; background: #0b130d; transition: opacity .8s ease-in; }
-.libro .base { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-.libro .sello { left: 35%; top: 40.5%; width: 30%; height: 17.5%; z-index: 3; }
-.libro.abriendo { opacity: 0; pointer-events: none; }
-.libro.fuera { display: none; }
-.apertura { z-index: 11; object-fit: cover; opacity: 0; pointer-events: none; }
-.apertura.reproduce { opacity: 1; }
-.apertura.fin { opacity: 0; transition: opacity .35s; }
-.apertura.fuera { display: none; }
-/* el video real queda invisible: solo alimenta al lienzo */
-.video-fuente { position: absolute; width: 2px; height: 2px; left: 0; top: 0; opacity: 0; pointer-events: none; }
+.activa .logo-img { animation: logo-entra 2.2s cubic-bezier(.2, .7, .2, 1) .35s forwards, logo-respira 6s ease-in-out 2.6s infinite; }
+.activa .logo-brillo { animation: logo-brillo 2.4s ease-in-out 1.6s forwards, logo-brillo-ciclo 7s ease-in-out 5s infinite; }
+@keyframes logo-entra { to { opacity: 1; transform: none; filter: none; } }
+@keyframes logo-respira { 0%, 100% { filter: drop-shadow(0 0 0 rgba(241, 210, 140, 0)); } 50% { filter: drop-shadow(0 0 14px rgba(241, 210, 140, .35)); } }
+@keyframes logo-brillo { 0% { opacity: 1; background-position: 120% 0; } 100% { opacity: 1; background-position: -20% 0; } }
+@keyframes logo-brillo-ciclo { 0%, 70% { opacity: 1; background-position: 120% 0; } 100% { opacity: 1; background-position: -20% 0; } }
+.para {
+  position: absolute; left: 10%; right: 10%; top: 66%; z-index: 3; text-align: center;
+  opacity: 0; transform: translateY(10px);
+}
+.activa .para { animation: aparece 1.4s ease-out 2.2s forwards; }
+@keyframes aparece { to { opacity: 1; transform: none; } }
+.para-etq { display: block; font-size: calc(var(--lw) * .034); letter-spacing: .42em; text-indent: .42em; text-transform: uppercase; color: var(--oro); opacity: .85; }
+.para-nombre {
+  display: block; margin-top: .35em; font-weight: 600; font-style: italic; line-height: 1.15;
+  font-size: calc(var(--lw) * .07); overflow-wrap: anywhere;
+  background: linear-gradient(180deg, #f6e3a8 0%, #d6ac5a 55%, #a87a32 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.para-nombre::after { content: ""; display: block; width: 40%; height: 1px; margin: .55em auto 0; background: linear-gradient(90deg, transparent, var(--oro), transparent); }
 
-/* ============================================================
-   LIBRETA: marco de cuero con filo dorado; las hojas se pasan
-   de una en una (la que sale se levanta y gira, la nueva aparece)
-   ============================================================ */
-.stage {
-  --marco: 10px;
-  --barra: 46px;
-  --A: min(calc(100vh - var(--barra) - 2 * var(--marco)), calc((100vw - 2 * var(--marco)) * 16 / 9));
-  --A: min(calc(100svh - var(--barra) - 2 * var(--marco)), calc((100vw - 2 * var(--marco)) * 16 / 9));
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: calc(var(--A) * 9 / 16 + 2 * var(--marco)); height: calc(var(--A) + var(--barra) + 2 * var(--marco));
-  overflow: hidden; border-radius: 14px;
-  background:
-    radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .08), transparent 60%),
-    repeating-radial-gradient(circle at 30% 40%, rgba(0, 0, 0, .06) 0 1px, transparent 1px 3px),
-    linear-gradient(160deg, #233a2a, #142319 55%, #0f1b13);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, .6);
-  touch-action: pan-y; user-select: none; -webkit-user-select: none;
+/* ---------- 4. Cuenta regresiva dentro del recuadro "Faltan" ---------- */
+.reloj {
+  position: absolute; left: 19%; top: 44%; width: 62%; height: 11%; z-index: 4;
+  display: flex; justify-content: space-between; align-items: center;
 }
-/* filo dorado del marco */
-.stage::before {
-  content: ""; position: absolute; inset: 4px; border-radius: 11px; pointer-events: none; z-index: 7;
-  border: 1px solid rgba(216, 179, 106, .55);
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .35);
+.reloj .u { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.reloj .n {
+  font-size: calc(var(--lw) * .1); font-weight: 600; line-height: 1; color: var(--crema);
+  font-variant-numeric: tabular-nums lining-nums; text-shadow: 0 1px 2px rgba(0, 0, 0, .4);
 }
-.slides {
-  position: absolute; left: var(--marco); right: var(--marco); top: var(--marco); bottom: calc(var(--barra) + var(--marco));
-  overflow: hidden; border-radius: 8px; background: #e9e2cf; perspective: 1400px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, .35), 0 6px 18px rgba(0, 0, 0, .45);
-}
-.slide {
-  position: absolute; inset: 0; transform-origin: left center;
-  opacity: 0; visibility: hidden; transform: none;
-  transition: opacity .55s ease, transform .6s cubic-bezier(.3, .7, .3, 1), visibility 0s .6s;
-  will-change: opacity, transform;
-}
-.slide.activo { opacity: 1; visibility: visible; z-index: 2; transition-delay: 0s; }
-/* la hoja que sale (hacia adelante) se levanta por el borde derecho y gira */
-.slide.saliendo { z-index: 3; visibility: visible; opacity: 0; transform: rotateY(-78deg); transition-delay: 0s; }
-.slide.saliendo::after { opacity: 1; }
-/* la hoja que vuelve (hacia atrás) llega girando desde la izquierda */
-.slide.volviendo { z-index: 3; }
-.slide.preparada { transition: none; transform: rotateY(-78deg); opacity: 0; visibility: visible; }
-.slide::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 4;
-  background: linear-gradient(90deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, 0) 45%, rgba(255, 255, 255, .18) 90%);
-  transition: opacity .4s;
-}
-.hoja { overflow: hidden; line-height: 0; background: #ebe5d2; }
-.hoja .base, .hoja .pieza { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hoja .base { object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
-.hoja .zona { z-index: 5; }
+.reloj .l { margin-top: .35em; font-size: calc(var(--lw) * .028); letter-spacing: .25em; text-indent: .25em; text-transform: uppercase; color: var(--oro); }
+.reloj .fin { width: 100%; text-align: center; font-size: calc(var(--lw) * .07); color: var(--crema); font-style: italic; }
 
-/* Piezas: trozos de la misma imagen recortados con una máscara suave */
-.pieza {
-  pointer-events: none; z-index: 3;
-  background-size: 100% 100%; background-position: center; background-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-position: center; mask-position: center;
-  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-  transform-origin: var(--ox) var(--oy);
+/* ---------- Reloj de la cuenta regresiva: agujas que giran ---------- */
+.agujas {
+  position: absolute; z-index: 4; pointer-events: none;
+  left: calc(50.49% - 13.6%); top: calc(19.92% - 7.65%); width: 27.2%; height: 15.3%;
+  filter: drop-shadow(1px 2px 1.5px rgba(40, 25, 8, .45));
+}
+.agujas g { transform-origin: 0 0; transform-box: view-box; }
+
+/* ---------- Agenda: la estrella baja por la línea de puntos ---------- */
+.estrella {
+  position: absolute; z-index: 4; pointer-events: none;
+  left: 21.94%; top: 21.41%; width: 10.56%; height: 6.88%;
+  filter: drop-shadow(0 0 5px rgba(255, 214, 140, .55));
   will-change: transform, opacity;
 }
-.pieza.grande { transform: scale(var(--z, 1.12)); }
-.pieza.grande.late { animation: late 2.2s ease-in-out infinite; }
-@keyframes late {
-  0%, 100% { transform: scale(var(--z)); }
-  45%      { transform: scale(calc(var(--z) + .05)); }
-  60%      { transform: scale(calc(var(--z) - .01)); }
-}
-/* ============================================================
-   ANIMALES: se dibujan en un lienzo (js/animales.js) sobre la hoja
-   ============================================================ */
-canvas.selva { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
-canvas.selva.sin-webgl { display: none; }
-canvas.caminan { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
-.frente { position: absolute; z-index: 4; height: auto; pointer-events: none; }
-
-/* Estrella de la agenda: baja por la línea y vuelve a aparecer arriba */
-.estrella {
-  position: absolute; left: 22.5%; top: 20.47%; width: 8.96%; height: auto; z-index: 3; pointer-events: none;
-  filter: drop-shadow(0 0 4px rgba(255, 220, 140, .55));
-}
-.slide.activo .estrella { animation: estrella 7s ease-in-out .8s infinite; }
+.activa .estrella { animation: estrella 9s ease-in-out .8s infinite; }
 @keyframes estrella {
-  0%     { opacity: 1; transform: none; }
-  70%    { opacity: 1; transform: translateY(640%) rotate(180deg); }
-  78%    { opacity: 0; transform: translateY(700%) rotate(200deg); }
-  78.1%  { opacity: 0; transform: translateY(-40%) rotate(0deg); }
-  88%    { opacity: 1; transform: none; }
-  100%   { opacity: 1; transform: none; }
+  0%    { transform: translateY(0) rotate(0); opacity: 1; }
+  8%    { transform: translateY(0) rotate(0); opacity: 1; }
+  72%   { transform: translateY(940%) rotate(360deg); opacity: 1; }
+  80%   { transform: translateY(1000%) rotate(400deg); opacity: 0; }
+  80.1% { transform: translateY(-60%) rotate(0); opacity: 0; }
+  92%   { transform: translateY(0) rotate(0); opacity: 1; }
+  100%  { transform: translateY(0) rotate(0); opacity: 1; }
 }
 
-/* Hoja de la cuenta regresiva */
-.slide-cuenta {
-  display: grid; grid-auto-flow: row; align-content: center; justify-items: center; gap: 22px;
-  line-height: normal; padding: 0 16px;
-  background:
-    radial-gradient(90% 60% at 50% 38%, rgba(63, 98, 72, .55), transparent 70%),
-    radial-gradient(120% 80% at 50% 100%, rgba(10, 20, 13, .9), transparent 70%),
-    #14231a;
-}
-.slide-cuenta::before {
-  content: ""; position: absolute; inset: 12px; border: 1px solid rgba(216, 179, 106, .55);
-  border-radius: 8px; pointer-events: none;
-  box-shadow: inset 0 0 0 5px rgba(20, 35, 26, .9), inset 0 0 0 6px rgba(216, 179, 106, .3);
-}
-.slide-cuenta .cuenta { z-index: 1; }
-.cuenta-tit { z-index: 1; margin: 0; text-align: center; color: var(--oro); font-weight: 600; letter-spacing: .06em; line-height: 1.05; font-size: clamp(34px, 11vw, 52px); text-shadow: 0 2px 12px rgba(0,0,0,.5); }
-.cuenta-tit small { display: block; margin-top: 8px; font-size: .34em; font-weight: 600; letter-spacing: .5em; text-indent: .5em; text-transform: uppercase; color: var(--oro-claro); }
-.cuenta-pie { z-index: 1; margin: 0; font-size: clamp(17px, 5vw, 22px); font-style: italic; color: var(--oro-claro); letter-spacing: .04em; }
+/* ---------- Video "vivo" de una hoja (animales, plantas) ---------- */
+.vivo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; opacity: 0; transition: opacity .6s; pointer-events: none; }
+.vivo.listo { opacity: 1; }
+.fija { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
 
-/* Cuenta regresiva */
-.cuenta {
-  position: relative; text-align: center; border-radius: 14px; padding: 26px 16px 24px;
-  width: 88%;
-  color: var(--tinta);
-  background:
-    radial-gradient(120% 90% at 20% 0%, rgba(255, 255, 255, .55), transparent 60%),
-    repeating-linear-gradient(0deg, rgba(120, 100, 60, .05) 0 1px, transparent 1px 4px),
-    var(--papel);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(160, 130, 70, .55), inset 0 0 0 6px var(--papel), inset 0 0 0 7px rgba(160, 130, 70, .45);
+/* ---------- Navegación ---------- */
+.mando {
+  position: absolute; left: 50%; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  height: calc(var(--barra) - 12px); width: min(var(--lw), 100vw); padding: 0 6px;
+  display: flex; align-items: center; justify-content: space-between; z-index: 30;
+  opacity: 0; transition: opacity .8s .6s;
 }
-.cuenta .titulo { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: .38em; text-transform: uppercase; color: #8a6d2c; }
-.cuenta .para { margin: 6px 0 0; font-size: 17px; font-style: italic; }
-.cuenta .para strong { font-style: normal; font-weight: 700; }
-.reloj { display: flex; justify-content: center; gap: clamp(10px, 4vw, 22px); margin-top: 14px; }
-.reloj .u { display: flex; flex-direction: column; align-items: center; min-width: 58px; }
-.reloj .n { font-size: clamp(40px, 12.5vw, 56px); font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums lining-nums; color: var(--verde); }
-.reloj .l { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; margin-top: 5px; color: #6d5a2c; }
-.fin-reloj { font-size: 28px; font-weight: 600; margin: 16px 0 4px; color: var(--verde); }
-.calendario { display: flex; flex-wrap: wrap; gap: 9px; justify-content: center; margin-top: 18px; }
-.btn-cal {
-  display: inline-flex; align-items: center; gap: 7px; cursor: pointer; text-decoration: none;
-  font: 600 15px/1 var(--serif); letter-spacing: .06em; color: var(--oro-claro);
-  background: linear-gradient(180deg, var(--verde-claro), var(--verde)); border: 1px solid #b89a52;
-  border-radius: 999px; padding: 10px 17px; transition: transform .08s ease-out, filter .08s;
-}
-.btn-cal:hover { filter: brightness(1.15); }
-.btn-cal:active { transform: scale(.95); }
-.btn-cal svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; }
-
-
-/* Puntos de página y pista para avanzar (sin texto) */
-.puntos {
-  position: absolute; left: 0; right: 0; bottom: calc(var(--marco) + 17px); z-index: 8;
-  display: flex; justify-content: center; gap: 7px; height: 12px; align-items: center;
-}
-.puntos i {
-  cursor: pointer; width: 6px; height: 6px; border-radius: 50%; background: rgba(243, 223, 168, .38);
-  transition: width .25s ease, background .25s ease; padding: 0;
-}
+.mando.ver { opacity: 1; }
+.puntos { display: flex; gap: 7px; align-items: center; }
+.puntos i { width: 6px; height: 6px; border-radius: 50%; background: rgba(241, 223, 174, .35); cursor: pointer; transition: width .3s, background .3s; }
 .puntos i.on { width: 20px; border-radius: 4px; background: var(--oro-claro); }
 .pista {
-  position: absolute; right: calc(var(--marco) + 6px); bottom: calc(var(--marco) + 5px); z-index: 8;
-  width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
-  color: var(--oro-claro); border: 1px solid rgba(216, 179, 106, .7); background: rgba(20, 35, 26, .6);
-  animation: anillo 2.4s ease-out infinite; transition: transform .07s, opacity .25s;
+  width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  color: var(--oro-claro); border: 1px solid rgba(212, 176, 106, .75); background: rgba(20, 35, 26, .65);
+  transition: transform .08s, opacity .3s;
 }
-.pista.atras { right: auto; left: calc(var(--marco) + 6px); animation: none; opacity: .75; }
-.pista[hidden] { display: none; }
-.pista svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-.pista:not(.atras) svg { animation: flecha 1.3s ease-in-out infinite; }
+.pista:not(.atras) { animation: anillo 2.4s ease-out infinite; }
 .pista:active { transform: scale(.9); }
-@keyframes flecha { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+.pista[disabled] { opacity: 0; pointer-events: none; }
+.pista svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.pista:focus-visible { outline: 2px solid var(--oro-claro); outline-offset: 2px; }
 
 /* Música */
 .musica {
-  position: fixed; right: 14px; bottom: 14px; z-index: 20; width: 48px; height: 48px;
-  border-radius: 50%; border: 1px solid #b89a52; cursor: pointer; display: grid; place-items: center;
-  color: var(--oro-claro); background: rgba(29, 53, 36, .92); box-shadow: 0 6px 16px rgba(0, 0, 0, .5);
+  position: fixed; right: 14px; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 40; width: 42px; height: 42px;
+  border-radius: 50%; border: 1px solid rgba(212, 176, 106, .75); cursor: pointer; display: grid; place-items: center;
+  color: var(--oro-claro); background: rgba(20, 35, 26, .75);
 }
 .musica[hidden] { display: none; }
-.musica svg { width: 22px; height: 22px; fill: currentColor; }
+.musica svg { width: 20px; height: 20px; fill: currentColor; }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
-  .pieza { opacity: 1 !important; transform: scale(var(--z, 1)) !important; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
