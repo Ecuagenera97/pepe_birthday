@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Generador de links · Pepe Portilla 60 años</title>
+  <link rel="icon" href="img/favicon.png" type="image/png">
+  <style>
+    :root { --verde: #1d3524; --oro: #b8923f; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #1f2a22; background: #eef0ea; }
+    .gen { width: min(100%, 760px); margin: 0 auto; padding: 24px 16px 60px; }
+    h1 { margin: 0; text-align: center; color: var(--verde); font-size: 26px; }
+    .intro { text-align: center; margin: 6px 0 22px; color: #5b675f; }
+    .panel { background: #fff; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.07); padding: 18px; margin-bottom: 18px; }
+    h2 { margin: 0 0 10px; font-size: 16px; color: var(--verde); }
+    label { display: block; font-size: 13px; font-weight: 600; color: #5b675f; margin: 12px 0 5px; }
+    input, textarea { width: 100%; font: inherit; font-size: 16px; padding: 10px 12px; border: 1px solid #d3d9d4; border-radius: 9px; background: #fbfcfb; }
+    textarea { min-height: 140px; resize: vertical; }
+    input:focus, textarea:focus { outline: 2px solid var(--verde); border-color: transparent; }
+    .fila { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .btn { font: inherit; font-size: 14px; font-weight: 600; border: 0; border-radius: 999px; padding: 10px 16px; cursor: pointer; background: var(--verde); color: #f3dfa8; text-decoration: none; display: inline-block; }
+    .btn.sec { background: #e6ebe7; color: var(--verde); }
+    .resultado { margin-top: 12px; padding: 12px; background: #f3f6f4; border-radius: 9px; word-break: break-all; font-size: 14px; min-height: 44px; }
+    .ayuda { font-size: 13px; color: #6b766f; margin: 6px 0 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #edf0ee; vertical-align: top; }
+    td.link { word-break: break-all; color: #4d5a52; font-size: 12.5px; }
+    td.acc { white-space: nowrap; }
+    td.acc .btn { padding: 6px 10px; font-size: 12.5px; }
+    .aviso { background: #fff7e6; border: 1px solid #f1d9a6; color: #6d5316; padding: 10px 12px; border-radius: 9px; font-size: 14px; margin-bottom: 18px; }
+    .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%) translateY(80px); background: #1f2a22; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 14px; transition: transform .2s; z-index: 9; }
+    .toast.ver { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="gen">
+    <h1>Links de invitación</h1>
+    <p class="intro">Crea el link personalizado de cada invitado y envíalo por WhatsApp.</p>
+
+    <div class="aviso" id="aviso-local" hidden>
+      Estás abriendo este archivo desde tu computadora. Escribe abajo la dirección pública de la invitación
+      (la de GitHub Pages) para que los links funcionen al enviarlos.
+    </div>
+
+    <div class="panel">
+      <h2>Dirección de la invitación</h2>
+      <input id="base" type="url" placeholder="https://usuario.github.io/repositorio/">
+      <p class="ayuda">Se detecta sola cuando esta página está publicada.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Un invitado</h2>
+      <label for="nombre">Nombre como aparecerá en la portada</label>
+      <input id="nombre" placeholder="Ej: Sr. Juan Pérez y Sra">
+      <p class="ayuda">Tip: la palabra "y" baja la segunda parte a otra línea (ej. "Ing. Pedro Orellana y Familia").</p>
+      <div class="resultado" id="res-uno">—</div>
+      <div class="fila">
+        <button class="btn" id="copiar-uno" type="button">Copiar link</button>
+        <a class="btn sec" id="abrir-uno" target="_blank" rel="noopener">Ver invitación</a>
+      </div>
+      <label for="telefono">WhatsApp del invitado (opcional)</label>
+      <input id="telefono" inputmode="tel" placeholder="Ej: 593991234567">
+      <label for="mensaje">Mensaje para enviar</label>
+      <textarea id="mensaje" style="min-height:90px"></textarea>
+      <p class="ayuda">Usa {nombre} y {link}; se reemplazan solos.</p>
+      <div class="fila"><a class="btn" id="wa-uno" target="_blank" rel="noopener">Enviar por WhatsApp</a></div>
+    </div>
+
+    <div class="panel">
+      <h2>Lista de invitados</h2>
+      <label for="lista">Un invitado por línea. Opcional: nombre, teléfono</label>
+      <textarea id="lista" placeholder="Sr. Juan Pérez y Sra, 593991234567&#10;Familia Orellana&#10;Dra. Ana López"></textarea>
+      <div class="fila">
+        <button class="btn" id="generar" type="button">Generar links</button>
+        <button class="btn sec" id="copiar-todos" type="button">Copiar todos</button>
+        <button class="btn sec" id="csv" type="button">Descargar Excel (CSV)</button>
+      </div>
+      <table id="tabla" hidden>
+        <thead><tr><th>Invitado</th><th>Link</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="config.js"></script>
+  <script src="js/comun.js"></script>
+  <script src="js/generador.js"></script>
+</body>
+</html>
