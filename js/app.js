@@ -1,7 +1,7 @@
 /* =====================================================================
    Invitación Pepe Portilla — funcionamiento del libro
    1) Tapa que se abre de derecha a izquierda
-   2) Hojas que se pasan como un libro (StPageFlip, js/page-flip.js)
+   2) Hojas que se pasan como un libro (giro 3D de cada hoja)
    3) Cuenta regresiva, calendario, enlaces de WhatsApp y mapa
    ===================================================================== */
 (function () {
@@ -34,28 +34,26 @@
     s.style.backgroundImage = "url(img/" + s.getAttribute("data-img") + ".webp)";
   });
 
-  /* ---------- Libro de hojas ---------- */
-  var pf = new St.PageFlip(flipEl, {
-    width: 900, height: 1600, size: "stretch",
-    minWidth: 5000, maxWidth: 4000, minHeight: 0, maxHeight: 8000,   // minWidth alto = siempre una hoja (vertical)
-    usePortrait: true, showCover: false, autoSize: true,
-    drawShadow: true, maxShadowOpacity: .55, flippingTime: reducido ? 300 : 2800,
-    mobileScrollSupport: false, swipeDistance: 25, clickEventForward: true,
-    useMouseEvents: true, showPageCorners: true, disableFlipByClick: true, startZIndex: 1
-  });
-  pf.loadFromHTML(paginas);
-  flipEl.style.minWidth = "0"; flipEl.style.minHeight = "0";
-
-  var actual = 0;
+  /* ---------- Libro de hojas: cada hoja gira sobre su lomo (izquierda) ----------
+     Solo se mueve una capa por vez con transform 3D (lo hace la tarjeta gráfica),
+     así el paso de hoja es fluido también en celulares. */
+  var actual = 0, girando = false;
+  var DUR = reducido ? 1 : 950;
   paginas.forEach(function (p, i) {
+    var s = document.createElement("span"); s.className = "giro-luz"; p.appendChild(s);   /* luz/sombra de la hoja al girar */
     var d = document.createElement("i");
-    d.addEventListener("click", function () { if (abierto) pf.flip(i); });
+    d.addEventListener("click", function () { if (abierto) irA(i); });
     puntos.appendChild(d);
   });
+  var sombraBajo = document.createElement("div"); sombraBajo.className = "giro-sombra"; flipEl.appendChild(sombraBajo);
+
   function pintar() {
     Array.prototype.forEach.call(puntos.children, function (d, i) { d.className = i === actual ? "on" : ""; });
     btnAtras.disabled = actual === 0;
     btnSig.disabled = actual === paginas.length - 1;
+  }
+  function mostrar(lista) {
+    paginas.forEach(function (p, i) { p.classList.toggle("vista", lista.indexOf(i) >= 0); });
   }
   function activar(i) {
     var antes = paginas[actual];
@@ -66,18 +64,95 @@
     if (paginas[i + 1] && window.VIVO_CTRL) VIVO_CTRL.precargar(paginas[i + 1]);
     pintar();
   }
-  pf.on("flip", function (e) { activar(e.data); });
-  btnSig.addEventListener("click", function () { pf.flipNext("top"); });
-  function atras() {                      /* hoja anterior, con la misma animación de libro */
-    if (actual <= 0) return;
-    var st = pf.getSettings(); st.disableFlipByClick = false;
-    pf.flipPrev("top"); st.disableFlipByClick = true;
+  function poner(p, ang, luz) {
+    p.style.transform = ang ? "rotateY(" + ang + "deg)" : "";
+    var l = p.querySelector(".giro-luz"); if (l) l.style.opacity = luz;
   }
-  btnAtras.addEventListener("click", atras);
+  function suave(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  /* anima una hoja de un ángulo a otro; desde = 0 (plana) ... -180 (pasada) */
+  function animar(hoja, desde, hasta, alFin) {
+    var t0 = performance.now(), dur = DUR * Math.max(.35, Math.abs(hasta - desde) / 180);
+    function paso(ahora) {
+      var u = Math.min(1, (ahora - t0) / dur), e = suave(u), a = desde + (hasta - desde) * e;
+      poner(hoja, a, Math.sin(-a * Math.PI / 180) * .55);
+      sombraBajo.style.opacity = Math.max(0, Math.cos(-a * Math.PI / 180)) * .45;
+      if (u < 1) requestAnimationFrame(paso); else alFin();
+    }
+    requestAnimationFrame(paso);
+  }
+  function siguiente(desdeAng) {
+    if (girando || actual >= paginas.length - 1) return;
+    girando = true;
+    var hoja = paginas[actual], i = actual + 1;
+    mostrar([actual, i]); hoja.classList.add("arriba"); sombraBajo.classList.add("ver");
+    animar(hoja, desdeAng || 0, -180, function () {
+      hoja.classList.remove("arriba"); poner(hoja, 0, 0); sombraBajo.classList.remove("ver");
+      mostrar([i]); activar(i); girando = false;
+    });
+  }
+  function anterior(desdeAng) {
+    if (girando || actual <= 0) return;
+    girando = true;
+    var i = actual - 1, hoja = paginas[i];
+    poner(hoja, desdeAng === undefined ? -180 : desdeAng, .55);
+    mostrar([actual, i]); hoja.classList.add("arriba"); sombraBajo.classList.add("ver");
+    animar(hoja, desdeAng === undefined ? -180 : desdeAng, 0, function () {
+      hoja.classList.remove("arriba"); poner(hoja, 0, 0); sombraBajo.classList.remove("ver");
+      mostrar([i]); activar(i); girando = false;
+    });
+  }
+  function irA(i) {
+    if (i === actual || girando) return;
+    if (i === actual + 1) return siguiente();
+    if (i === actual - 1) return anterior();
+    /* salto largo: la hoja cambia con un fundido corto */
+    var nueva = paginas[i]; mostrar([actual, i]); nueva.classList.add("arriba", "fundido");
+    setTimeout(function () { nueva.classList.remove("arriba", "fundido"); mostrar([i]); activar(i); }, 450);
+  }
+  mostrar([0]);
+  btnSig.addEventListener("click", function () { siguiente(); });
+  btnAtras.addEventListener("click", function () { anterior(); });
   document.addEventListener("keydown", function (e) {
     if (!abierto) { if (e.key === "Enter" || e.key === " ") abrir(); return; }
-    if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); pf.flipNext("top"); }
-    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); atras(); }
+    if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); siguiente(); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); anterior(); }
+  });
+
+  /* Deslizar con el dedo: la hoja sigue al dedo y al soltar termina de pasar (o vuelve) */
+  var tx = null, ty = 0, arrastre = null;
+  flipEl.addEventListener("touchstart", function (e) {
+    if (!abierto || girando || e.touches.length !== 1) { tx = null; return; }
+    tx = e.touches[0].clientX; ty = e.touches[0].clientY; arrastre = null;
+  }, { passive: true });
+  flipEl.addEventListener("touchmove", function (e) {
+    if (tx === null) return;
+    var dx = e.touches[0].clientX - tx, dy = e.touches[0].clientY - ty, w = flipEl.clientWidth;
+    if (!arrastre) {
+      if (Math.abs(dx) < 10 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx < 0 && actual < paginas.length - 1) {
+        arrastre = { dir: 1, hoja: paginas[actual] }; mostrar([actual, actual + 1]);
+      } else if (dx > 0 && actual > 0) {
+        arrastre = { dir: -1, hoja: paginas[actual - 1] }; mostrar([actual, actual - 1]);
+      } else { tx = null; return; }
+      arrastre.hoja.classList.add("arriba"); sombraBajo.classList.add("ver");
+    }
+    var f = Math.max(0, Math.min(1, Math.abs(dx) / (w * .9)));
+    var ang = arrastre.dir === 1 ? -180 * f : -180 * (1 - f);
+    arrastre.ang = ang;
+    poner(arrastre.hoja, ang, Math.sin(-ang * Math.PI / 180) * .55);
+    sombraBajo.style.opacity = Math.max(0, Math.cos(-ang * Math.PI / 180)) * .45;
+  }, { passive: true });
+  flipEl.addEventListener("touchend", function () {
+    if (!arrastre) { tx = null; return; }
+    var a = arrastre, ang = a.ang || 0; tx = null; arrastre = null;
+    var pasa = a.dir === 1 ? ang < -50 : ang > -130;
+    if (a.dir === 1) {
+      if (pasa) siguiente(ang);
+      else { girando = true; animar(a.hoja, ang, 0, function () { a.hoja.classList.remove("arriba"); sombraBajo.classList.remove("ver"); mostrar([actual]); girando = false; }); }
+    } else {
+      if (pasa) anterior(ang);
+      else { girando = true; animar(a.hoja, ang, -180, function () { a.hoja.classList.remove("arriba"); poner(a.hoja, 0, 0); sombraBajo.classList.remove("ver"); mostrar([actual]); girando = false; }); }
+    }
   });
 
   /* ---------- 1. Abrir la tapa ---------- */
@@ -203,6 +278,6 @@
   if (/pagina=\d/.test(location.hash)) {
     var n = parseInt(location.hash.replace(/\D+/g, ""), 10) - 2;   // N = número de pantalla (2..11)
     abrir(); libro.classList.add("abierto");
-    if (n > 0 && n < paginas.length) { pf.turnToPage(n); activar(n); }
+    if (n > 0 && n < paginas.length) { mostrar([n]); activar(n); }
   }
 })();

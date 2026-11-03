@@ -32,8 +32,29 @@ a, button { touch-action: manipulation; }
   width: var(--lw, 360px); height: var(--lh, 640px);
   perspective: 2200px;
 }
-.flip { width: 100%; height: 100%; }
+.flip { position: relative; width: 100%; height: 100%; perspective: 2200px; perspective-origin: 0 50%; }
+.flip > .pagina {
+  position: absolute; inset: 0; visibility: hidden; z-index: 1;
+  transform-origin: left center; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: 2px 6px 6px 2px; box-shadow: 0 14px 40px rgba(0, 0, 0, .45);
+}
+.flip > .pagina.vista { visibility: visible; }
+.flip > .pagina.arriba { z-index: 3; will-change: transform; }
+.flip > .pagina.fundido { animation: fundido .45s ease both; }
+@keyframes fundido { from { opacity: 0; } to { opacity: 1; } }
+/* luz que recorre la hoja mientras gira (da volumen al papel) */
+.giro-luz {
+  position: absolute; inset: 0; z-index: 9; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .05) 0%, rgba(255, 255, 255, .18) 55%, rgba(0, 0, 0, .35) 100%);
+}
+/* sombra que cae sobre la hoja de abajo */
+.giro-sombra {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; display: none;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .45), rgba(0, 0, 0, .12) 40%, rgba(0, 0, 0, 0) 75%);
+}
+.giro-sombra.ver { display: block; }
 .pagina { position: relative; overflow: hidden; background: #ece3cc; }
+.flip { touch-action: pan-y; }
 .pagina .base { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; user-select: none; }
 /* lomo: sombra suave a la izquierda de cada hoja (libro abierto) */
 .pagina::after {

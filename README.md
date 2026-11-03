@@ -17,10 +17,11 @@ Link por invitado: `index.html?nombre=Sr.+Juan+Pérez+y+Sra` (lo crea `generador
 | **`config.js`** | Fecha y hora, link del mapa, teléfonos y mensajes de WhatsApp (código PP60), link de la fundación, música | Casi siempre aquí |
 | `img/p01…p11_*.webp` | Las 11 pantallas del diseño en HD (1440×2560) | Solo si cambia el diseño |
 | `img/p02_cuero.webp`, `p02_logo_capa.webp`, `p02_logo_brillo.png` | Pantalla del logo separada en fondo + logo + brillo | Si cambia el logo |
+| `musica/con_te_partiro.mp3` | Música de fondo (Con te partirò, instrumental, 5 min). Empieza al tocar el sello; el botón de arriba a la derecha la pausa | Para cambiar la canción: reemplaza el archivo con el mismo nombre |
 | `video/` | Videos con movimiento de cada pantalla (por ahora `p03_selva.mp4`) | Para agregar movimiento a otra pantalla |
 | `js/vivo.js` | Lista de qué pantalla usa qué video | Al agregar un video nuevo |
 | `index.html` | Las pantallas y la posición de los botones (`left/top/width/height` en %) | Solo para mover un botón |
-| `css/`, `js/app.js`, `js/page-flip.js` | Diseño y funcionamiento | No |
+| `css/`, `js/app.js` | Diseño y funcionamiento | No |
 
 ## Editar desde GitHub
 
@@ -31,3 +32,5 @@ Abre el archivo → lápiz ✏️ → cambia el texto entre comillas → **Commi
 1. Copia el video vertical (9:16) a `video/`, por ejemplo `video/p08_confirmacion.mp4`.
 2. En `js/vivo.js` añade una línea dentro de `window.VIVO`, por ejemplo:
    `confirmacion: { video: "video/p08_confirmacion.mp4" },`
+
+`unaVez: true` en `js/vivo.js` hace que el video se reproduzca una sola vez y quede en el último cuadro (se usa para las flores que se abren).

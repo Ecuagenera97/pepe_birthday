@@ -7,9 +7,10 @@
    Para agregar uno: copia el .mp4 a video/ y añade una línea aquí.
    ===================================================================== */
 window.VIVO = {
-  /* pagina (data-pag): { video, fija (opcional) } */
+  /* pagina (data-pag): { video, fija (opcional), poster (opcional), unaVez: true = se reproduce una vez y queda en el último cuadro } */
   selva: { video: "video/p03_selva.mp4", fija: "img/p03_fija.webp" },
   confirmacion: { video: "video/p08_confirmacion.mp4", fija: "img/p08_fija.webp" },
+  cuenta: { video: "video/p04_flores.mp4", fija: "img/p04_fija.webp", poster: "img/p04_poster.jpg", unaVez: true },
 };
 
 (function () {
@@ -21,7 +22,8 @@ window.VIVO = {
       var cfg = window.VIVO[k], hoja = document.querySelector('.pagina[data-pag="' + k + '"]');
       if (!hoja || !cfg.video || reducido) return;
       var v = document.createElement("video");
-      v.className = "vivo"; v.muted = true; v.loop = true; v.playsInline = true;
+      v.className = "vivo"; v.muted = true; v.loop = !cfg.unaVez; v.playsInline = true;
+      if (cfg.poster) { v.poster = cfg.poster; v.classList.add("listo"); }
       v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", "");
       v.preload = "none"; v.src = cfg.video;
       v.addEventListener("playing", function () { v.classList.add("listo"); });
@@ -41,6 +43,7 @@ window.VIVO = {
     entrar: function (hoja) {
       var v = hojas[hoja && hoja.getAttribute("data-pag")]; if (!v) return;
       if (v.preload === "none") { v.preload = "auto"; v.load(); }
+      if (!v.loop) { try { v.currentTime = 0; } catch (e) {} }
       var p = v.play(); if (p && p.catch) p.catch(function () {});
     },
     salir: function (hoja) {

@@ -47,5 +47,5 @@ window.INVITACION = {
 
   /* Música de fondo (opcional): copia un .mp3 a la carpeta "musica" y escribe
      por ejemplo "musica/cancion.mp3". Déjalo vacío "" para no usar música. */
-  musica: ""
+  musica: "musica/con_te_partiro.mp3"
 };
