@@ -8,8 +8,8 @@
    ===================================================================== */
 window.VIVO = {
   /* pagina (data-pag): { video, fija (opcional), poster (opcional), unaVez: true = se reproduce una vez y queda en el último cuadro } */
-  selva: { video: "video/p03_selva.mp4", fija: "img/p03_fija.webp" },
-  confirmacion: { video: "video/p08_confirmacion.mp4", fija: "img/p08_fija.webp" },
+  /* selva: el arte cambió el 26-nov; falta el video nuevo con el diseño actualizado */
+  /* confirmacion: el arte cambió el 26-nov; falta el video nuevo con el diseño actualizado */
   cuenta: { video: "video/p04_flores.mp4", fija: "img/p04_fija.webp", poster: "img/p04_poster.jpg", unaVez: true },
 };
 

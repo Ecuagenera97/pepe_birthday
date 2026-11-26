@@ -42,6 +42,10 @@ window.INVITACION = {
   /* Botón de la fundación (obsequio) */
   obsequio: "https://sites.google.com/view/santamariadelaesperanza/inicio?authuser=1",
 
+  /* Segundo botón del obsequio: Conferencia San Vicente de Paúl.
+     Pega aquí su link (página, Instagram o WhatsApp). Vacío = el botón no abre nada. */
+  obsequio2: "",
+
   /* Texto de la portada cuando el link no trae nombre */
   sinNombre: "Te esperamos",
 

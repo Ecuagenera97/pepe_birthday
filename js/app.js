@@ -185,7 +185,8 @@
     confirmar: U.whatsapp(C.confirmacion.whatsapp,
       C.confirmacion.mensaje.replace(/\{nombre\}/g, invitado || C.confirmacion.sinNombre || "")),
     hospedaje: U.whatsapp(C.hospedaje.whatsapp, C.hospedaje.mensaje),
-    obsequio: C.obsequio
+    obsequio: C.obsequio,
+    obsequio2: C.obsequio2
   };
   Array.prototype.forEach.call(document.querySelectorAll("[data-accion]"), function (a) {
     var u = enlaces[a.getAttribute("data-accion")]; if (u) a.href = u;

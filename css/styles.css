@@ -174,7 +174,7 @@ a, button { touch-action: manipulation; }
 /* ---------- Agenda: la estrella baja por la línea de puntos ---------- */
 .estrella {
   position: absolute; z-index: 4; pointer-events: none;
-  left: 21.94%; top: 21.41%; width: 10.56%; height: 6.88%;
+  left: 20.56%; top: 16.56%; width: 10.56%; height: 7.03%;
   filter: drop-shadow(0 0 5px rgba(255, 214, 140, .55));
   will-change: transform, opacity;
 }
@@ -182,8 +182,8 @@ a, button { touch-action: manipulation; }
 @keyframes estrella {
   0%    { transform: translateY(0) rotate(0); opacity: 1; }
   8%    { transform: translateY(0) rotate(0); opacity: 1; }
-  72%   { transform: translateY(940%) rotate(360deg); opacity: 1; }
-  80%   { transform: translateY(1000%) rotate(400deg); opacity: 0; }
+  72%   { transform: translateY(800%) rotate(360deg); opacity: 1; }
+  80%   { transform: translateY(860%) rotate(400deg); opacity: 0; }
   80.1% { transform: translateY(-60%) rotate(0); opacity: 0; }
   92%   { transform: translateY(0) rotate(0); opacity: 1; }
   100%  { transform: translateY(0) rotate(0); opacity: 1; }
